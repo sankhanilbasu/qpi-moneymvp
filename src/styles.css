@@ -81,6 +81,11 @@
   --merchant-music: oklch(0.49 0.12 305);
   --merchant-crafts: oklch(0.52 0.1 240);
   --map-shadow: 0 3px 14px oklch(0.15 0 0 / 20%);
+  --welcome-background: oklch(0.985 0.004 85);
+  --welcome-foreground: oklch(0.2 0.005 50);
+  --welcome-copper: oklch(0.65 0.13 52);
+  --welcome-button-text: oklch(0.99 0 0);
+  --welcome-secondary: oklch(0.9 0.003 85 / 80%);
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.2 0.01 50);
@@ -194,6 +199,16 @@ body { font-family: var(--font-sans); -webkit-tap-highlight-color: transparent; 
 @media (prefers-reduced-motion: reduce) { .trust-progress { transition: none; } }
 
 .trust-avatar-photo { width: 74%; aspect-ratio: 1; border-radius: 50%; object-fit: cover; }
+.welcome-screen { position: relative; isolation: isolate; overflow: hidden; margin: 0 auto; max-width: 448px; min-height: 620px; height: 100dvh; background: var(--welcome-background); color: var(--welcome-foreground); display: grid; grid-template-rows: 1.25fr 0.8fr 0.65fr; padding: calc(48px + env(safe-area-inset-top)) 28px calc(64px + env(safe-area-inset-bottom)); }
+.welcome-paper { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
+.welcome-brand { display: flex; align-items: end; justify-content: center; padding-bottom: 24px; }
+.welcome-logo { width: 280px; max-width: 100%; height: auto; }
+.welcome-tagline { display: flex; align-items: center; justify-content: center; text-align: center; font-size: 30px; font-weight: 500; line-height: 1.22; }
+.welcome-actions { display: flex; flex-direction: column; justify-content: end; gap: 12px; }
+.welcome-login, .welcome-signup { width: 100%; height: 58px; border-radius: 999px; font-size: 20px; font-weight: 500; border: none; box-shadow: none; }
+.welcome-login { background: var(--welcome-copper); color: var(--welcome-button-text); }
+.welcome-login:hover { background: var(--welcome-copper); filter: brightness(0.96); }
+.welcome-signup, .welcome-signup:disabled { background: var(--welcome-secondary); color: var(--welcome-foreground); opacity: 1; }
 .discovery-layout { width: 100%; min-width: 0; height: calc(100dvh - 130px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); min-height: 600px; max-height: 1000px; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(250px, 1fr) minmax(340px, 2fr); }
 .discovery-stories { min-width: 0; min-height: 0; display: flex; flex-direction: column; justify-content: center; gap: 8px; padding: 12px 0; }
 .story-scroll { display: flex; gap: 14px; overflow-x: auto; padding: 4px 16px 12px; scrollbar-width: thin; }

@@ -16,3 +16,4 @@
 - Keep illustrative Trust histories separate from scoring logic until real transactions are connected; demo records must never imply verification.
 - Keep Leaflet imports isolated in a lazy-loaded map rendered behind ClientOnly; browser-only mapping must not enter SSR evaluation.
 - Use one filtered producer collection and selected ID for stories, map pins, and offer summaries so discovery stays synchronized.
+- Mock login stores only a unified session flag, accepting legacy role flags for compatibility; storefront access must not depend on an account role.

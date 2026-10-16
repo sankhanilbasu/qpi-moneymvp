@@ -1,8 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { BadgeCheck, Wallet } from "lucide-react";
-import { useEffect, useState } from "react";
 import { AppShell, Card } from "@/components/AppShell";
-import { getRole, signOut } from "@/lib/app-state";
+import { signOut } from "@/lib/app-state";
 import { TrustRing } from "@/components/TrustRing";
 import { profileTrust } from "@/lib/trust-demo";
 import { Button } from "@/components/ui/button";
@@ -23,13 +22,10 @@ export const Route = createFileRoute("/profile")({
 
 function Profile() {
   const navigate = useNavigate();
-  const [role, setRole] = useState<string | null>(null);
-  useEffect(() => setRole(getRole()), []);
   return (
     <AppShell title="Profile">
       <section className="flex flex-col items-center gap-2 py-6">
-        <TrustRing name="Your profile" initials={role === "producer" ? "PR" : "CO"} input={profileTrust} large />
-        <p className="text-xs capitalize text-muted-foreground">{role ?? ""} account</p>
+        <TrustRing name="Your profile" initials="QP" input={profileTrust} large />
         <span className="mt-1 text-xs text-muted-foreground">Demo profile · Illustrative Trust score</span>
       </section>
       <Card className="mt-3 bg-gradient-copper text-primary-foreground">

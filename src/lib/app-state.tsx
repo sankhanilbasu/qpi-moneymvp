@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 
-export type Role = "consumer" | "producer";
-
-export function getRole(): Role | null {
-  if (typeof window === "undefined") return null;
-  return (localStorage.getItem("qpi.role") as Role | null) ?? null;
+// Demo-only session, not authentication. All users have the same access:
+// shopping is the default and storefront setup is available to everyone.
+export function isSignedIn(): boolean {
+  if (typeof window === "undefined") return false;
+  return localStorage.getItem("qpi.session") === "active" || ["consumer", "producer"].includes(localStorage.getItem("qpi.role") ?? "");
 }
-export function signIn(role: Role) {
-  localStorage.setItem("qpi.role", role);
+export function signIn() {
+  localStorage.setItem("qpi.session", "active");
+  localStorage.removeItem("qpi.role");
 }
 export function signOut() {
+  localStorage.removeItem("qpi.session");
   localStorage.removeItem("qpi.role");
 }
 

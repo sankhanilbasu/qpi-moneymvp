@@ -9,3 +9,7 @@
 - [x] Synchronize story/pin selection and show producer offers and Trust breakdown.
 - [x] Expand Trust formula edge tests and run the complete test suite.
 - [x] Verify discovery selection, filtering, map controls, and layouts on mobile and desktop.
+
+# Unified welcome
+- [x] Match the uploaded welcome reference and remove role distinctions.
+- [x] Verify role-free login, storefront access, profile, and logout.
