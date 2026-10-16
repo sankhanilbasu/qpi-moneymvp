@@ -2,7 +2,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { Compass, MessageCircle, PlusSquare, User, Moon, Sun, Download } from "lucide-react";
 import { useEffect, type ReactNode } from "react";
 import { QpiMark } from "./QpiMark";
-import { getRole, useInstallPrompt, useTheme } from "@/lib/app-state";
+import { isSignedIn, useInstallPrompt, useTheme } from "@/lib/app-state";
 
 const tabs = [
   { to: "/discover", label: "Discover", icon: Compass },
@@ -16,7 +16,7 @@ export function AppShell({ title, children, spatial = false }: { title: string; 
   const install = useInstallPrompt();
   const navigate = useNavigate();
   useEffect(() => {
-    if (!getRole()) navigate({ to: "/" });
+    if (!isSignedIn()) navigate({ to: "/" });
   }, [navigate]);
 
   return (
