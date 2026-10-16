@@ -31,7 +31,10 @@ function MapContents({ producers, selectedId, onSelect }: MapProps) {
   }, [map, producers, selectedId, onSelect]);
   useEffect(() => {
     const selected = producers.find(p => p.id === selectedId);
-    if (selected) map.panTo(selected.position, { animate: false });
+    if (selected) {
+      map.panTo(selected.position, { animate: false });
+      map.panBy([0, map.getSize().y * 0.28], { animate: false });
+    }
   }, [map, producers, selectedId]);
   return <div className="map-controls"><Button variant="outline" size="icon" aria-label="Zoom in" title="Zoom in" onClick={() => map.zoomIn()}><Plus /></Button><Button variant="outline" size="icon" aria-label="Zoom out" title="Zoom out" onClick={() => map.zoomOut()}><Minus /></Button><Button variant="outline" size="icon" aria-label="Recenter map" title="Recenter map" onClick={() => map.setView(center,14)}><Crosshair /></Button></div>;
 }

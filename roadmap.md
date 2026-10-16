@@ -5,7 +5,7 @@
 - [x] Verify tests and the login → rings → breakdown flow, including mobile and dark theme.
 
 # Phase 3
-- [ ] Add filterable producer stories and an interactive category-marker map.
-- [ ] Synchronize story/pin selection and show producer offers and Trust breakdown.
-- [ ] Expand Trust formula edge tests and run the complete test suite.
-- [ ] Verify discovery selection, filtering, map controls, and layouts on mobile and desktop.
+- [x] Add filterable producer stories and an interactive category-marker map.
+- [x] Synchronize story/pin selection and show producer offers and Trust breakdown.
+- [x] Expand Trust formula edge tests and run the complete test suite.
+- [x] Verify discovery selection, filtering, map controls, and layouts on mobile and desktop.
