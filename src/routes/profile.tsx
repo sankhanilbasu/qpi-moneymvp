@@ -3,14 +3,19 @@ import { BadgeCheck, Wallet } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AppShell, Card } from "@/components/AppShell";
 import { getRole, signOut } from "@/lib/app-state";
+import { TrustRing } from "@/components/TrustRing";
+import { profileTrust } from "@/lib/trust-demo";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({
     meta: [
       { title: "Profile — QPi.money" },
-      { name: "description", content: "Your confidence score, wallet and credentials." },
+      { name: "description", content: "Your Trust score, transaction factors, wallet and credentials." },
       { property: "og:title", content: "Profile — QPi.money" },
-      { property: "og:description", content: "Your confidence score, wallet and credentials." },
+      { property: "og:description", content: "Your Trust score, transaction factors, wallet and credentials." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Profile,
@@ -20,20 +25,13 @@ function Profile() {
   const navigate = useNavigate();
   const [role, setRole] = useState<string | null>(null);
   useEffect(() => setRole(getRole()), []);
-  const score = 87;
   return (
     <AppShell title="Profile">
-      <Card className="flex flex-col items-center gap-2 py-6">
-        <div className="relative h-32 w-32">
-          <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90">
-            <circle cx="18" cy="18" r="16" fill="none" className="stroke-muted" strokeWidth="3" />
-            <circle cx="18" cy="18" r="16" fill="none" className="stroke-primary" strokeWidth="3" strokeLinecap="round" strokeDasharray={`${score} 100`} pathLength={100} />
-          </svg>
-          <span className="absolute inset-0 flex items-center justify-center text-3xl font-semibold">{score}</span>
-        </div>
-        <p className="font-medium">Confidence score</p>
+      <section className="flex flex-col items-center gap-2 py-6">
+        <TrustRing name="Your profile" initials={role === "producer" ? "PR" : "CO"} input={profileTrust} large />
         <p className="text-xs capitalize text-muted-foreground">{role ?? ""} account</p>
-      </Card>
+        <span className="mt-1 text-xs text-muted-foreground">Demo profile · Illustrative Trust score</span>
+      </section>
       <Card className="mt-3 bg-gradient-copper text-primary-foreground">
         <div className="flex items-center gap-2 text-sm opacity-90"><Wallet className="h-4 w-4" /> Wallet</div>
         <p className="mt-2 text-3xl font-semibold">$1,248.50</p>
@@ -45,9 +43,9 @@ function Profile() {
           <Card key={c} className="flex items-center gap-2 py-3"><BadgeCheck className="h-5 w-5 text-primary" />{c}</Card>
         ))}
       </div>
-      <button onClick={() => { signOut(); navigate({ to: "/" }); }} className="mt-6 w-full rounded-xl border border-border py-3 font-medium">
+      <Button variant="outline" onClick={() => { signOut(); navigate({ to: "/" }); }} className="mt-6 h-12 w-full rounded-xl font-medium">
         Log out
-      </button>
+      </Button>
     </AppShell>
   );
 }
