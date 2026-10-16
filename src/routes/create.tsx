@@ -9,6 +9,8 @@ export const Route = createFileRoute("/create")({
       { name: "description", content: "Set up your storefront and create offers." },
       { property: "og:title", content: "Create — QPi.money" },
       { property: "og:description", content: "Set up your storefront and create offers." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Create,

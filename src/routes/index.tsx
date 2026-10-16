@@ -10,6 +10,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Sign in to QPi.money, the trust platform for consumers and producers." },
       { property: "og:title", content: "QPi.money — Welcome" },
       { property: "og:description", content: "Sign in to QPi.money, the trust platform for consumers and producers." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Welcome,

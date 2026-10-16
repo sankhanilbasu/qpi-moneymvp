@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MapPin, Search } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
+import { TrustRing } from "@/components/TrustRing";
+import { demoProducers } from "@/lib/trust-demo";
 
 export const Route = createFileRoute("/discover")({
   head: () => ({
@@ -9,16 +11,12 @@ export const Route = createFileRoute("/discover")({
       { name: "description", content: "Find trusted producers and offers near you." },
       { property: "og:title", content: "Discover — QPi.money" },
       { property: "og:description", content: "Find trusted producers and offers near you." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Discover,
 });
-
-const nearby = [
-  { name: "Riverside Bakery", dist: "0.4 km", score: 94 },
-  { name: "Copperleaf Farm", dist: "1.2 km", score: 88 },
-  { name: "Atlas Repair Co.", dist: "2.7 km", score: 91 },
-];
 
 function Discover() {
   return (
@@ -34,15 +32,16 @@ function Discover() {
         ))}
         <span className="absolute bottom-3 left-3 rounded-full bg-background/90 px-3 py-1 text-xs font-medium">Within 5 km</span>
       </div>
-      <h2 className="mb-2 mt-6 text-sm font-semibold text-muted-foreground">Nearby</h2>
+      <div className="mb-2 mt-6 flex items-center justify-between"><h2 className="text-sm font-semibold text-muted-foreground">Nearby producers</h2><span className="text-xs text-muted-foreground">Demo Trust scores</span></div>
       <div className="flex flex-col gap-2">
-        {nearby.map((n) => (
-          <Card key={n.name} className="flex items-center justify-between">
-            <div>
+        {demoProducers.map((n) => (
+          <Card key={n.name} className="flex items-center gap-4">
+            <TrustRing name={n.name} initials={n.initials} input={n.trust} />
+            <div className="min-w-0">
               <p className="font-medium">{n.name}</p>
-              <p className="text-xs text-muted-foreground">{n.dist}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{n.category} · {n.dist}</p>
+              <p className="mt-2 text-xs text-muted-foreground">{n.trust.completedTransactions} completed transactions</p>
             </div>
-            <span className="rounded-full bg-accent px-2.5 py-1 text-xs font-semibold text-primary">{n.score}</span>
           </Card>
         ))}
       </div>

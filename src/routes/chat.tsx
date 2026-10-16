@@ -9,6 +9,8 @@ export const Route = createFileRoute("/chat")({
       { name: "description", content: "Live ledger and conversational commitments." },
       { property: "og:title", content: "Chat — QPi.money" },
       { property: "og:description", content: "Live ledger and conversational commitments." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Chat,
