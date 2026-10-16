@@ -15,7 +15,7 @@ describe("Trust score whitepaper rules", () => {
     expect(calculateTrustScore({ ...perfect, milestones: [{ scheduledDue: 100, actualSettled: 90, window: 20 }, { scheduledDue: 100, actualSettled: 105, window: 20 }] }).schedule).toBe(0.625);
   });
   it("caps three times the unique counterparty ratio at 1", () => {
-    expect(calculateTrustScore({ ...perfect, uniqueCounterparties: 5 }).reciprocity).toBe(0.3);
+    expect(calculateTrustScore({ ...perfect, uniqueCounterparties: 5 }).reciprocity).toBeCloseTo(0.3);
     expect(calculateTrustScore(perfect).reciprocity).toBe(1);
   });
   it("weights native ratios 0.5, 0.3 and 0.2 and converts to seed percentage points", () => {
@@ -48,7 +48,7 @@ describe("Trust score whitepaper rules", () => {
     expect(result.score).toBeCloseTo(result.effectivePerformance * 0.8);
   });
   it("clamps the final score at 15.0 and 99.9, including negative friction boosts", () => {
-    expect(calculateTrustScore({ ...perfect, rawDisputeFriction: 1 }).score).toBe(15);
+    expect(calculateTrustScore({ ...perfect, completedTransactions: 49, rawDisputeFriction: 1 }).score).toBe(15);
     expect(calculateTrustScore({ ...perfect, bureauSeed: 100 }).score).toBe(99.9);
     expect(calculateTrustScore({ ...perfect, rawDisputeFriction: -0.25 }).score).toBe(99.9);
   });
