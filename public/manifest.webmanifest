@@ -1,0 +1,12 @@
+{
+  "name": "QPi.money",
+  "short_name": "QPi",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#C46E3A",
+  "background_color": "#FFFFFF",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
