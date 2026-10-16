@@ -11,5 +11,5 @@
 - [x] Verify discovery selection, filtering, map controls, and layouts on mobile and desktop.
 
 # Unified welcome
-- [ ] Match the uploaded welcome reference and remove role distinctions.
-- [ ] Verify role-free login, storefront access, profile, and logout.
+- [x] Match the uploaded welcome reference and remove role distinctions.
+- [x] Verify role-free login, storefront access, profile, and logout.
