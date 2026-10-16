@@ -6,7 +6,7 @@ import { calculateTrustScore, trustTier, type TrustInput } from "@/lib/trust-sco
 
 const percent = (value: number) => `${(value * 100).toFixed(1)}%`;
 
-export function TrustRing({ name, initials, input, large = false, avatar, onSelect, selected = false }: { name: string; initials: string; input: TrustInput; large?: boolean; avatar?: string; onSelect?: () => void; selected?: boolean }) {
+export function TrustRing({ name, initials, input, large = false, avatar, onSelect, selected = false }: { name: string; initials: string; input: TrustInput; large?: boolean; avatar?: string | undefined; onSelect?: () => void; selected?: boolean }) {
   const gradientId = `trust-${useId().replace(/:/g, "")}`;
   const result = calculateTrustScore(input);
   const tier = trustTier(result.score);
