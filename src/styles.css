@@ -1,6 +1,7 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+@import "leaflet/dist/leaflet.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -75,6 +76,11 @@
   --trust-high: oklch(0.51 0.14 155);
   --trust-high-end: oklch(0.7 0.16 165);
   --overlay: oklch(0.12 0 0 / 65%);
+  --merchant-kitchen: oklch(0.56 0.15 42);
+  --merchant-courier: oklch(0.46 0.1 180);
+  --merchant-music: oklch(0.49 0.12 305);
+  --merchant-crafts: oklch(0.52 0.1 240);
+  --map-shadow: 0 3px 14px oklch(0.15 0 0 / 20%);
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.2 0.01 50);
@@ -186,3 +192,30 @@ body { font-family: var(--font-sans); -webkit-tap-highlight-color: transparent; 
 .trust-ring-large .trust-ring-number { font-size: 32px; }
 .trust-progress { transition: stroke-dasharray 500ms ease; }
 @media (prefers-reduced-motion: reduce) { .trust-progress { transition: none; } }
+
+.trust-avatar-photo { width: 74%; aspect-ratio: 1; border-radius: 50%; object-fit: cover; }
+.discovery-layout { width: 100%; min-width: 0; height: calc(100dvh - 130px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); min-height: 600px; max-height: 1000px; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(250px, 1fr) minmax(340px, 2fr); }
+.discovery-stories { min-width: 0; min-height: 0; display: flex; flex-direction: column; justify-content: center; gap: 8px; padding: 12px 0; }
+.story-scroll { display: flex; gap: 14px; overflow-x: auto; padding: 4px 16px 12px; scrollbar-width: thin; }
+.producer-story { flex: 0 0 86px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.producer-story .trust-ring-small { width: 80px; }
+.story-selected .trust-ring-avatar { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 50%; }
+.discovery-map-region { position: relative; isolation: isolate; min-width: 0; min-height: 0; background: var(--muted); }
+.discovery-leaflet { width: 100%; height: 100%; z-index: 0; font-family: var(--font-sans); background: var(--muted); }
+.map-filters { position: absolute; top: 12px; left: 12px; right: 12px; z-index: 5; display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
+.map-filters > button { flex-shrink: 0; border-radius: 999px; box-shadow: var(--map-shadow); }
+.map-controls { position: absolute; top: 64px; right: 12px; z-index: 500; display: flex; flex-direction: column; gap: 6px; }
+.map-controls > button { box-shadow: var(--map-shadow); }
+.merchant-kitchen { --merchant-tone: var(--merchant-kitchen); }
+.merchant-courier { --merchant-tone: var(--merchant-courier); }
+.merchant-music { --merchant-tone: var(--merchant-music); }
+.merchant-crafts { --merchant-tone: var(--merchant-crafts); }
+.merchant-marker-host { background: none; border: none; }
+.merchant-pin { width: 44px; height: 44px; background: var(--background); color: var(--merchant-tone); border: 2px solid var(--merchant-tone); border-radius: 50% 50% 50% 6px; transform: rotate(-45deg); box-shadow: var(--map-shadow); }
+.merchant-pin svg { transform: rotate(45deg); }
+.merchant-pin:hover { background: var(--accent); }
+.merchant-selected { background: var(--merchant-tone); color: var(--primary-foreground); outline: 3px solid var(--background); outline-offset: 2px; }
+.merchant-selected:hover { background: var(--merchant-tone); }
+.map-offer-summary { position: absolute; left: 12px; right: 12px; bottom: 30px; z-index: 10; max-height: 70%; overflow-y: auto; background: var(--background); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--map-shadow); padding: 14px; }
+.discovery-leaflet .leaflet-control-attribution { background: var(--background); color: var(--muted-foreground); font-size: 10px; }
+.discovery-leaflet .leaflet-control-attribution a { color: var(--primary); }

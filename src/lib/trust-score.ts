@@ -40,9 +40,11 @@ export function calculateTrustScore(input: TrustInput) {
   const reciprocity = input.totalTransactions === 0 ? 0 : Math.min(input.uniqueCounterparties / input.totalTransactions * 3, 1);
   const nativePerformance = 100 * (TRUST_RULES.fulfillmentWeight * fulfillment + TRUST_RULES.scheduleWeight * schedule + TRUST_RULES.reciprocityWeight * reciprocity);
   const effectivePerformance = (TRUST_RULES.seedWeight * bureauSeed + input.completedTransactions * nativePerformance) / (TRUST_RULES.seedWeight + input.completedTransactions);
+  if (![fulfillment, schedule, reciprocity, nativePerformance, effectivePerformance].every(Number.isFinite)) throw new Error("Trust performance exceeds the supported numeric range.");
   const remainingEscalatedFriction = input.escalatedDisputes.reduce((sum, dispute) => sum + redemptionFriction(dispute), 0);
   // rawDisputeFriction excludes escalated disputes, which enter only after decay.
   const rawFriction = input.rawDisputeFriction + remainingEscalatedFriction;
+  if (![remainingEscalatedFriction, rawFriction, rawFriction + input.pendingPenalty].every(Number.isFinite)) throw new Error("Dispute friction exceeds the supported numeric range.");
   const disputeFriction = clamp(rawFriction + input.pendingPenalty, -0.25, 1);
   const armorActive = effectivePerformance >= 95 && input.completedTransactions >= 50;
   const omega = armorActive ? 0.5 : 1;
