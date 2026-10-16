@@ -21,6 +21,10 @@
 @theme inline {
   --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
   --color-copper-deep: var(--copper-deep);
+  --color-trust-low: var(--trust-low);
+  --color-trust-medium: var(--trust-medium);
+  --color-trust-high: var(--trust-high);
+  --color-overlay: var(--overlay);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -64,6 +68,13 @@
 }
 
 :root {
+  --trust-low: oklch(0.55 0.21 26);
+  --trust-low-end: oklch(0.65 0.18 38);
+  --trust-medium: oklch(0.58 0.14 70);
+  --trust-medium-end: oklch(0.77 0.16 85);
+  --trust-high: oklch(0.51 0.14 155);
+  --trust-high-end: oklch(0.7 0.16 165);
+  --overlay: oklch(0.12 0 0 / 65%);
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.2 0.01 50);
@@ -101,6 +112,9 @@
 }
 
 .dark {
+  --trust-low: oklch(0.72 0.19 26);
+  --trust-medium: oklch(0.78 0.15 75);
+  --trust-high: oklch(0.75 0.15 155);
   --background: oklch(0.16 0.008 50);
   --foreground: oklch(0.97 0.005 60);
   --card: oklch(0.21 0.01 50);
@@ -154,3 +168,21 @@
   box-shadow: 0 10px 30px -10px color-mix(in oklab, var(--primary) 50%, transparent);
 }
 body { font-family: var(--font-sans); -webkit-tap-highlight-color: transparent; }
+
+.trust-low { --trust-tone: var(--trust-low); --trust-end: var(--trust-low-end); }
+.trust-medium { --trust-tone: var(--trust-medium); --trust-end: var(--trust-medium-end); }
+.trust-high { --trust-tone: var(--trust-high); --trust-end: var(--trust-high-end); }
+.trust-tone { color: var(--trust-tone); }
+.trust-gradient-start { stop-color: var(--trust-tone); }
+.trust-gradient-end { stop-color: var(--trust-end); }
+.trust-ring-trigger { position: relative; display: flex; flex-direction: column; gap: 2px; height: auto; padding: 0; border-radius: 50%; background: transparent; box-shadow: none; }
+.trust-ring-small { width: 64px; flex-shrink: 0; }
+.trust-ring-large { width: 144px; gap: 8px; border-radius: 8px; }
+.trust-ring-avatar { position: relative; display: grid; place-items: center; width: 100%; aspect-ratio: 1; }
+.trust-ring-trigger .trust-ring-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.trust-initials { display: grid; place-items: center; width: 74%; aspect-ratio: 1; border-radius: 50%; background: var(--muted); color: var(--foreground); font-size: 14px; font-weight: 600; }
+.trust-ring-large .trust-initials { font-size: 28px; }
+.trust-ring-number { color: var(--trust-tone); font-size: 12px; line-height: 1.3; font-weight: 700; }
+.trust-ring-large .trust-ring-number { font-size: 32px; }
+.trust-progress { transition: stroke-dasharray 500ms ease; }
+@media (prefers-reduced-motion: reduce) { .trust-progress { transition: none; } }
