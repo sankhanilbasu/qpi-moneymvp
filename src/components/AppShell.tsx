@@ -11,7 +11,7 @@ const tabs = [
   { to: "/profile", label: "Profile", icon: User },
 ] as const;
 
-export function AppShell({ title, children }: { title: string; children: ReactNode }) {
+export function AppShell({ title, children, spatial = false }: { title: string; children: ReactNode; spatial?: boolean }) {
   const { dark, toggle } = useTheme();
   const install = useInstallPrompt();
   const navigate = useNavigate();
@@ -38,7 +38,7 @@ export function AppShell({ title, children }: { title: string; children: ReactNo
             </button>
           </div>
         </header>
-        <main className="flex-1 px-4 py-4 pb-28">{children}</main>
+        <main className={spatial ? "flex-1 pb-[calc(64px+env(safe-area-inset-bottom))]" : "flex-1 px-4 py-4 pb-28"}>{children}</main>
         <nav className="fixed bottom-0 left-1/2 z-10 w-full max-w-md -translate-x-1/2 border-t border-border bg-background/90 pb-[env(safe-area-inset-bottom)] backdrop-blur">
           <ul className="grid grid-cols-4">
             {tabs.map(({ to, label, icon: Icon }) => (

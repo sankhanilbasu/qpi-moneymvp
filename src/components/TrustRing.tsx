@@ -6,26 +6,28 @@ import { calculateTrustScore, trustTier, type TrustInput } from "@/lib/trust-sco
 
 const percent = (value: number) => `${(value * 100).toFixed(1)}%`;
 
-export function TrustRing({ name, initials, input, large = false }: { name: string; initials: string; input: TrustInput; large?: boolean }) {
+export function TrustRing({ name, initials, input, large = false, avatar, onSelect, selected = false }: { name: string; initials: string; input: TrustInput; large?: boolean; avatar?: string; onSelect?: () => void; selected?: boolean }) {
   const gradientId = `trust-${useId().replace(/:/g, "")}`;
   const result = calculateTrustScore(input);
   const tier = trustTier(result.score);
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="ghost" aria-label={`${name} Trust score ${result.score.toFixed(1)} — view breakdown`} title="Trust score breakdown" className={`trust-ring-trigger trust-${tier} ${large ? "trust-ring-large" : "trust-ring-small"}`}>
+  const trigger = (
+        <Button variant="ghost" onClick={onSelect} aria-pressed={onSelect ? selected : undefined} aria-label={`${name} Trust score ${result.score.toFixed(1)} — ${onSelect ? "view offers" : "view breakdown"}`} title={onSelect ? `${name} offers` : "Trust score breakdown"} className={`trust-ring-trigger trust-${tier} ${large ? "trust-ring-large" : "trust-ring-small"} ${selected ? "story-selected" : ""}`}>
           <span className="trust-ring-avatar">
             <svg viewBox="0 0 100 100" aria-hidden="true" className="trust-ring-svg">
               <defs><linearGradient id={gradientId} x1="0" y1="1" x2="1" y2="0"><stop offset="0%" className="trust-gradient-start" /><stop offset="100%" className="trust-gradient-end" /></linearGradient></defs>
               <circle cx="50" cy="50" r="45" fill="none" className="stroke-muted" strokeWidth="5" />
               <circle cx="50" cy="50" r="45" fill="none" stroke={`url(#${gradientId})`} strokeWidth="5" strokeLinecap="round" pathLength="100" strokeDasharray={`${result.score} 100`} transform="rotate(-90 50 50)" className="trust-progress" />
             </svg>
-            <span className="trust-initials">{initials}</span>
+            {avatar ? <img src={avatar} alt="" className="trust-avatar-photo" /> : <span className="trust-initials">{initials}</span>}
           </span>
           <span className="trust-ring-number tabular-nums">{result.score.toFixed(1)}</span>
           {large && <span className="text-sm font-medium text-muted-foreground">Trust score</span>}
         </Button>
-      </DialogTrigger>
+  );
+  if (onSelect) return trigger;
+  return (
+    <Dialog>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="max-h-[88dvh] w-[calc(100%-1.5rem)] max-w-md overflow-y-auto rounded-lg p-5">
         <DialogHeader>
           <DialogTitle>Trust score breakdown</DialogTitle>
