@@ -13,6 +13,11 @@ const center: [number, number] = [51.52, -0.077];
 function MapContents({ producers, selectedId, onSelect }: MapProps) {
   const map = useMap();
   useEffect(() => {
+    const observer = new ResizeObserver(() => map.invalidateSize());
+    observer.observe(map.getContainer());
+    return () => observer.disconnect();
+  }, [map]);
+  useEffect(() => {
     const roots: ReturnType<typeof createRoot>[] = [];
     const markers = producers.map(producer => {
       const selected = producer.id === selectedId;
