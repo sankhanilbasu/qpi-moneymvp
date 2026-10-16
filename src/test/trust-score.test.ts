@@ -59,4 +59,70 @@ describe("Trust score whitepaper rules", () => {
   it("rejects zero settlement windows rather than producing non-finite scores", () => {
     expect(() => calculateTrustScore({ ...perfect, milestones: [{ scheduledDue: 1, actualSettled: 1, window: 0 }] })).toThrow();
   });
+  it.each([[1,79.1666666667],[4,86.1111111111],[6,88.6363636364]])("blends the 75 bureau seed at %i native transactions", (count, expected) => {
+    expect(calculateTrustScore({ ...perfect, completedTransactions: count }).effectivePerformance).toBeCloseTo(expected);
+  });
+  it("uses a supplied bureau seed, even zero, for cold starts", () => {
+    expect(calculateTrustScore({ ...perfect, completedTransactions: 0, bureauSeed: 0 }).effectivePerformance).toBe(0);
+    expect(calculateTrustScore({ ...perfect, completedTransactions: 0, bureauSeed: 90 }).score).toBe(90);
+  });
+  it("defines zero denominators and absent milestones without NaN", () => {
+    const result = calculateTrustScore({ ...perfect, unitsCommitted: 0, totalTransactions: 0, milestones: [] });
+    expect(result.fulfillment).toBe(0); expect(result.schedule).toBe(0); expect(result.reciprocity).toBe(0); expect(result.score).toBe(15);
+  });
+  it("preserves the literal fulfillment ratio for over-delivery", () => {
+    expect(calculateTrustScore({ ...perfect, unitsConsumed: 120, unitsDelivered: 120 }).fulfillment).toBe(1.2);
+  });
+  it("preserves negative schedule accuracy beyond the settlement window", () => {
+    const result = calculateTrustScore({ ...perfect, milestones: [{ scheduledDue: 100, actualSettled: 130, window: 10 }] });
+    expect(result.schedule).toBe(-2); expect(result.nativePerformance).toBeCloseTo(10);
+  });
+  it("has zero reciprocity without counterparties and saturates at one-third", () => {
+    expect(calculateTrustScore({ ...perfect, uniqueCounterparties: 0 }).reciprocity).toBe(0);
+    expect(calculateTrustScore({ ...perfect, totalTransactions: 12, uniqueCounterparties: 4 }).reciprocity).toBe(1);
+  });
+  it("redeems via clean transactions when they outpace time", () => {
+    expect(redemptionFriction({ initialFriction: 0.24, cleanTransactions: 9, daysElapsed: 30 })).toBe(0.06);
+    expect(redemptionFriction({ initialFriction: 0.24, cleanTransactions: 0, daysElapsed: 0 })).toBe(0.24);
+  });
+  it("adds multiple decayed escalations exactly once before the friction clamp", () => {
+    const result = calculateTrustScore({ ...perfect, rawDisputeFriction: 0.2, pendingPenalty: 0.1, escalatedDisputes: [{ initialFriction: 0.24, cleanTransactions: 6, daysElapsed: 0 }, { initialFriction: 0.4, cleanTransactions: 0, daysElapsed: 90 }] });
+    expect(result.remainingEscalatedFriction).toBeCloseTo(0.32); expect(result.disputeFriction).toBeCloseTo(0.62);
+  });
+  it("clamps escalated friction plus pending penalties at the upper bound", () => {
+    expect(calculateTrustScore({ ...perfect, rawDisputeFriction: 0.8, pendingPenalty: 0.2, escalatedDisputes: [{ initialFriction: 0.2, cleanTransactions: 0, daysElapsed: 0 }] }).disputeFriction).toBe(1);
+  });
+  it("preserves friction at both exact clamp boundaries", () => {
+    expect(calculateTrustScore({ ...perfect, rawDisputeFriction: -0.25 }).disputeFriction).toBe(-0.25);
+    expect(calculateTrustScore({ ...perfect, rawDisputeFriction: 1 }).disputeFriction).toBe(1);
+  });
+  it("preserves final Trust scores at exact master clamp boundaries", () => {
+    expect(calculateTrustScore({ ...perfect, completedTransactions: 0, bureauSeed: 15 }).score).toBe(15);
+    expect(calculateTrustScore({ ...perfect, completedTransactions: 0, bureauSeed: 99.9 }).score).toBe(99.9);
+  });
+  it("requires the count threshold even with effective performance exactly 95", () => {
+    const result = calculateTrustScore({ ...perfect, completedTransactions: 49, bureauSeed: 46, rawDisputeFriction: 0.2 });
+    expect(result.effectivePerformance).toBe(95); expect(result.omega).toBe(1); expect(result.score).toBe(76);
+  });
+  it("armor retains half of performance even at maximum dispute friction", () => {
+    expect(calculateTrustScore({ ...perfect, bureauSeed: 45, rawDisputeFriction: 1 }).score).toBe(47.5);
+  });
+  it.each([-1, NaN, Infinity])("rejects invalid native transaction count %s", value => {
+    expect(() => calculateTrustScore({ ...perfect, completedTransactions: value })).toThrow();
+  });
+  it.each([NaN, Infinity])("rejects non-finite bureau seed %s", value => {
+    expect(() => calculateTrustScore({ ...perfect, bureauSeed: value })).toThrow();
+  });
+  it.each([-10,NaN,Infinity])("rejects invalid settlement window %s", value => {
+    expect(() => calculateTrustScore({ ...perfect, milestones: [{ scheduledDue: 1, actualSettled: 1, window: value }] })).toThrow();
+  });
+  it("rejects invalid redemption progress and non-finite dispute factors", () => {
+    expect(() => calculateTrustScore({ ...perfect, escalatedDisputes: [{ initialFriction: 0.2, cleanTransactions: -1, daysElapsed: 0 }] })).toThrow();
+    expect(() => calculateTrustScore({ ...perfect, escalatedDisputes: [{ initialFriction: 0.2, cleanTransactions: 0, daysElapsed: Infinity }] })).toThrow();
+    expect(() => calculateTrustScore({ ...perfect, rawDisputeFriction: NaN })).toThrow();
+    expect(() => calculateTrustScore({ ...perfect, pendingPenalty: Infinity })).toThrow();
+  });
+  it("rejects overflowed intermediate performance instead of returning NaN", () => {
+    expect(() => calculateTrustScore({ ...perfect, completedTransactions: Number.MAX_VALUE })).toThrow();
+  });
 });
