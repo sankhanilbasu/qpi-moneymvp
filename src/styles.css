@@ -21,6 +21,7 @@
 
 @theme inline {
   --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-tagline: "Space Grotesk", var(--font-sans);
   --color-copper-deep: var(--copper-deep);
   --color-trust-low: var(--trust-low);
   --color-trust-medium: var(--trust-medium);
@@ -203,7 +204,7 @@ body { font-family: var(--font-sans); -webkit-tap-highlight-color: transparent; 
 .welcome-paper { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
 .welcome-brand { display: flex; align-items: end; justify-content: center; padding-bottom: 24px; }
 .welcome-logo { width: 280px; max-width: 100%; height: auto; }
-.welcome-tagline { display: flex; align-items: center; justify-content: center; text-align: center; font-size: 30px; font-weight: 500; line-height: 1.22; }
+.welcome-tagline { display: flex; align-items: center; justify-content: center; text-align: center; font-family: var(--font-tagline); font-size: 30px; font-weight: 600; line-height: 1.22; letter-spacing: -0.01em; }
 .welcome-actions { display: flex; flex-direction: column; justify-content: end; gap: 12px; }
 .welcome-login, .welcome-signup { width: 100%; height: 58px; border-radius: 999px; font-size: 20px; font-weight: 500; border: none; box-shadow: none; }
 .welcome-login { background: var(--welcome-copper); color: var(--welcome-button-text); }
