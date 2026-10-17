@@ -26,7 +26,7 @@ function Welcome() {
         <img src={welcomePaper} alt="" width={768} height={1536} className="welcome-paper" />
         <div className="welcome-brand">
           <h1 className="sr-only">QPi.money</h1>
-          <img src={welcomeLogo} alt="QPi" width={2048} height={2048} className="welcome-logo" />
+          <img src={welcomeLogo} alt="QPi" width={1755} height={885} className="welcome-logo" />
         </div>
         <p className="welcome-tagline">Earn trust, not<br />just income.</p>
         <div className="welcome-actions">
