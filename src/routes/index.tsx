@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { signIn } from "@/lib/app-state";
-import welcomeLogo from "@/assets/qpi-welcome-logo.png";
+import welcomeLogo from "@/assets/qpi-logo.png";
 import welcomePaper from "@/assets/welcome-paper.jpg";
 
 export const Route = createFileRoute("/")({
@@ -26,7 +26,7 @@ function Welcome() {
         <img src={welcomePaper} alt="" width={768} height={1536} className="welcome-paper" />
         <div className="welcome-brand">
           <h1 className="sr-only">QPi.money</h1>
-          <img src={welcomeLogo} alt="QPi" width={1152} height={576} className="welcome-logo" />
+          <img src={welcomeLogo} alt="QPi" width={2048} height={2048} className="welcome-logo" />
         </div>
         <p className="welcome-tagline">Earn trust, not<br />just income.</p>
         <div className="welcome-actions">
