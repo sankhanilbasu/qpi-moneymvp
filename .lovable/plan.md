@@ -1,36 +1,52 @@
-# Proposed roadmap (Phases 4–9)
+# MVP plan
 
-Phases 1–3 and the unified welcome screen are complete. Below is a proposed sequence for the rest of the app; each phase can be approved and built on its own.
+Everything runs in sandbox mode: login, ID checks and payments are simulated. Each one is clearly labeled "Sandbox" so nothing looks like it has really been verified or paid. Maps use free OpenStreetMap tiles, so no API key is needed.
 
-## Phase 4 — Brand polish
-- Replace the small copper header mark with the official metallic logo.
-- Update the installed-app icons (home screen, splash) to the new mark.
+## 1. Brand polish
+- The header mark and the installed-app icons use the official metallic logo.
 
-## Phase 5 — Real accounts (Lovable Cloud)
-- Enable Sign up and Login with email and Google; remove the mocked login.
-- One account type for everyone: shop by default, open a storefront anytime.
-- Profile stores name, photo, and location.
+## 2. Sandbox login and onboarding
+- Login and Sign up both work in sandbox mode: you enter a name and email, and no password is checked.
+- A short onboarding: profile photo, display name, and home location picked on a map.
+- Mocked government ID upload: you pick a photo, then see a "Pending → Verified (Sandbox)" status. It shows up under Credentials on Profile.
+- There is one account type for everyone. Every user can shop and can open a storefront.
 
-## Phase 6 — Storefronts and offers
-- Make the Create wizard save: storefront details, offers (name, price, category, photo), terms.
-- Published offers appear on Discover stories and map pins, replacing demo listings.
-- Edit and pause your own offers from Profile.
+## 3. Storefronts and offers (Create)
+- The wizard saves its steps:
+  - Storefront: name, category (Cloud Kitchen, Courier, Music Lessons, Crafts, Cab), location on a map
+  - Offer: title, price, photo, description
+  - Terms: delivery or pickup, schedule
+  - Review: publish
+- Published offers show up in Discover stories and as map pins, next to the demo listings.
+- From Profile you can edit, pause or delete your own offers.
 
-## Phase 7 — Chat and commitments
-- Real one-to-one chat between users.
-- Propose a commitment from chat (what, quantity, schedule, price); the other side accepts or declines.
-- Live ledger shows active, completed, and disputed commitments.
+## 4. Chat with commitments and locations
+- One-to-one threads that open from any offer ("Message" / "Request").
+- In the chat box you can share a location, using either a map picker or a search of free address results.
+- Commitment cards cover the item, quantity, price, schedule, and pickup and drop-off points. The other side can Accept, Decline or Counter.
+- Live ledger: active, completed and disputed commitments.
 
-## Phase 8 — Trust score from real activity
-- Feed completed commitments, deliveries, and on-time milestones into the existing Trust score math.
-- Dispute flow: raise, resolve, escalate; redemption decay applies automatically.
-- Remove illustrative histories once real data exists.
+## 5. Live tracking (courier, food delivery, cab)
+- An accepted delivery-type commitment opens a tracking screen with a map, a route line between pickup and drop-off, a simulated moving courier, the arrival time, and status steps (Accepted → Picked up → On the way → Delivered).
+- Confirming delivery completes the commitment.
 
-## Phase 9 — Wallet and payments
-- Wallet balance and transaction history.
-- Pay for commitments via a payment provider; payouts to storefront owners.
+## 6. Mocked payments and wallet
+- Sandbox wallet with a starting balance and a "Top up (Sandbox)" button.
+- Accepting a commitment holds the funds in escrow. Delivery releases them to the seller. A dispute freezes them.
+- Wallet history lists every hold, release, refund and top-up.
+
+## 7. Trust score from real activity
+- Completed commitments, delivery quantities, on-time milestones and distinct counterparties feed into the existing Trust score math.
+- Dispute flow: raise, resolve or escalate. The redemption decay is applied automatically.
+- Producers with no activity still start from the bureau seed. Demo producers keep their "Illustrative" label.
+
+## 8. MVP finish
+- Empty states, error messages, sign out clears all sandbox data, and page titles and descriptions for every screen.
+- Full test pass plus a check of every flow on mobile and desktop.
 
 ## Technical notes
-- Phases 5–9 need Lovable Cloud (database, auth, storage); Phase 9 adds a payments integration.
-- Trust math stays in its pure tested module; new data only supplies its inputs.
-- roadmap.md gets these phases as open tasks once approved.
+- Storage: everything is saved in the browser through one typed sandbox store, so it works with no backend. The code is set up so Lovable Cloud can replace that store later.
+- Maps: Leaflet with OSM tiles, still lazy-loaded behind ClientOnly. Address search uses Nominatim (free) with a debounce of 1 request per second. Routes use the public OSRM demo, with a straight line as the fallback.
+- Payments, the escrow state machine and the "commitment → Trust input" conversion are pure modules with rule tests: hold, release, refund, frozen while disputed, no negative balance, and the input conversion.
+- Routes added: /onboarding, /offer/$id, /chat/$id, /track/$id, /wallet.
+- Every new item is added to roadmap.md as an open task.
