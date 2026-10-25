@@ -14,6 +14,7 @@ import { Route as CreateRouteImport } from './routes/create'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as ChatIndexRouteImport } from './routes/chat.index'
 import { Route as ChatIdRouteImport } from './routes/chat.$id'
 import { Route as OfferIdRouteImport } from './routes/offer.$id'
@@ -44,6 +45,11 @@ const ProfileRoute = ProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WalletRoute = WalletRouteImport.update({
+  id: '/wallet',
+  path: '/wallet',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ChatIndexRoute = ChatIndexRouteImport.update({
   id: '/chat/',
   path: '/chat/',
@@ -71,6 +77,7 @@ export interface FileRoutesByFullPath {
   '/discover': typeof DiscoverRoute
   '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
+  '/wallet': typeof WalletRoute
   '/chat/$id': typeof ChatIdRoute
   '/offer/$id': typeof OfferIdRoute
   '/track/$id': typeof TrackIdRoute
@@ -82,6 +89,7 @@ export interface FileRoutesByTo {
   '/discover': typeof DiscoverRoute
   '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
+  '/wallet': typeof WalletRoute
   '/chat/$id': typeof ChatIdRoute
   '/offer/$id': typeof OfferIdRoute
   '/track/$id': typeof TrackIdRoute
@@ -94,6 +102,7 @@ export interface FileRoutesById {
   '/discover': typeof DiscoverRoute
   '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
+  '/wallet': typeof WalletRoute
   '/chat/$id': typeof ChatIdRoute
   '/offer/$id': typeof OfferIdRoute
   '/track/$id': typeof TrackIdRoute
@@ -107,6 +116,7 @@ export interface FileRouteTypes {
     | '/discover'
     | '/onboarding'
     | '/profile'
+    | '/wallet'
     | '/chat/$id'
     | '/offer/$id'
     | '/track/$id'
@@ -118,6 +128,7 @@ export interface FileRouteTypes {
     | '/discover'
     | '/onboarding'
     | '/profile'
+    | '/wallet'
     | '/chat/$id'
     | '/offer/$id'
     | '/track/$id'
@@ -129,6 +140,7 @@ export interface FileRouteTypes {
     | '/discover'
     | '/onboarding'
     | '/profile'
+    | '/wallet'
     | '/chat/$id'
     | '/offer/$id'
     | '/track/$id'
@@ -141,6 +153,7 @@ export interface RootRouteChildren {
   DiscoverRoute: typeof DiscoverRoute
   OnboardingRoute: typeof OnboardingRoute
   ProfileRoute: typeof ProfileRoute
+  WalletRoute: typeof WalletRoute
   ChatIdRoute: typeof ChatIdRoute
   OfferIdRoute: typeof OfferIdRoute
   TrackIdRoute: typeof TrackIdRoute
@@ -184,6 +197,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/wallet': {
+      id: '/wallet'
+      path: '/wallet'
+      fullPath: '/wallet'
+      preLoaderRoute: typeof WalletRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/chat/': {
       id: '/chat/'
       path: '/chat'
@@ -221,6 +241,7 @@ const rootRouteChildren: RootRouteChildren = {
   DiscoverRoute: DiscoverRoute,
   OnboardingRoute: OnboardingRoute,
   ProfileRoute: ProfileRoute,
+  WalletRoute: WalletRoute,
   ChatIdRoute: ChatIdRoute,
   OfferIdRoute: OfferIdRoute,
   TrackIdRoute: TrackIdRoute,
