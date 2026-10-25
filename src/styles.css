@@ -81,6 +81,7 @@
   --merchant-courier: oklch(0.46 0.1 180);
   --merchant-music: oklch(0.49 0.12 305);
   --merchant-crafts: oklch(0.52 0.1 240);
+  --merchant-cab: oklch(0.55 0.13 95);
   --map-shadow: 0 3px 14px oklch(0.15 0 0 / 20%);
   --welcome-background: oklch(0.985 0.004 85);
   --welcome-foreground: oklch(0.2 0.005 50);
@@ -226,6 +227,13 @@ body { font-family: var(--font-sans); -webkit-tap-highlight-color: transparent; 
 .merchant-courier { --merchant-tone: var(--merchant-courier); }
 .merchant-music { --merchant-tone: var(--merchant-music); }
 .merchant-crafts { --merchant-tone: var(--merchant-crafts); }
+.merchant-cab { --merchant-tone: var(--merchant-cab); }
+.sandbox-leaflet { width: 100%; height: 100%; z-index: 0; font-family: var(--font-sans); background: var(--muted); }
+.sandbox-pin { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 50%; font-size: 13px; font-weight: 700; background: var(--primary); color: var(--primary-foreground); border: 2px solid var(--background); box-shadow: var(--map-shadow); }
+.sandbox-pin-pickup { background: var(--merchant-courier); }
+.sandbox-pin-dropoff { background: var(--merchant-kitchen); }
+.sandbox-pin-courier { background: var(--foreground); color: var(--background); transition: transform 0.9s linear; }
+.sandbox-route { stroke: var(--primary); stroke-width: 5; stroke-opacity: 0.85; fill: none; }
 .merchant-marker-host { background: none; border: none; }
 .merchant-pin { width: 44px; height: 44px; background: var(--background); color: var(--merchant-tone); border: 2px solid var(--merchant-tone); border-radius: 50% 50% 50% 6px; transform: rotate(-45deg); box-shadow: var(--map-shadow); }
 .merchant-pin svg { transform: rotate(45deg); }
