@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { FileSignature } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
 
-export const Route = createFileRoute("/chat")({
+export const Route = createFileRoute("/chat/")({
   head: () => ({
     meta: [
       { title: "Chat — QPi.money" },
