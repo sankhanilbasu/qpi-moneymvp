@@ -6,7 +6,7 @@ import { calculateTrustScore, trustTier, type TrustInput } from "@/lib/trust-sco
 
 const percent = (value: number) => `${(value * 100).toFixed(1)}%`;
 
-export function TrustRing({ name, initials, input, large = false, avatar, onSelect, selected = false }: { name: string; initials: string; input: TrustInput; large?: boolean; avatar?: string | undefined; onSelect?: () => void; selected?: boolean }) {
+export function TrustRing({ name, initials, input, large = false, avatar, onSelect, selected = false, source = "Illustrative transaction history" }: { source?: string | undefined; name: string; initials: string; input: TrustInput; large?: boolean; avatar?: string | undefined; onSelect?: () => void; selected?: boolean }) {
   const gradientId = `trust-${useId().replace(/:/g, "")}`;
   const result = calculateTrustScore(input);
   const tier = trustTier(result.score);
@@ -31,7 +31,7 @@ export function TrustRing({ name, initials, input, large = false, avatar, onSele
       <DialogContent className="max-h-[88dvh] w-[calc(100%-1.5rem)] max-w-md overflow-y-auto rounded-lg p-5">
         <DialogHeader>
           <DialogTitle>Trust score breakdown</DialogTitle>
-          <DialogDescription>{name} · Illustrative transaction history</DialogDescription>
+          <DialogDescription>{name} · {source}</DialogDescription>
         </DialogHeader>
         <div className={`trust-${tier} flex items-end justify-between border-b border-border pb-4`}>
           <div><p className="trust-tone text-4xl font-semibold tabular-nums">{result.score.toFixed(1)}<span className="ml-1 text-sm font-normal text-muted-foreground">/ 100</span></p><p className="mt-1 text-xs text-muted-foreground">{input.completedTransactions} completed transactions</p></div>

@@ -1,8 +1,9 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Compass, MessageCircle, PlusSquare, User, Moon, Sun, Download } from "lucide-react";
+import { Compass, MessageCircle, PlusSquare, User, Moon, Sun, Download, ArrowLeft } from "lucide-react";
 import { useEffect, type ReactNode } from "react";
-import { QpiMark } from "./QpiMark";
 import { isSignedIn, useInstallPrompt, useTheme } from "@/lib/app-state";
+import { getState } from "@/lib/sandbox-store";
+import logo from "@/assets/qpi-logo.png";
 
 const tabs = [
   { to: "/discover", label: "Discover", icon: Compass },
@@ -11,21 +12,22 @@ const tabs = [
   { to: "/profile", label: "Profile", icon: User },
 ] as const;
 
-export function AppShell({ title, children, spatial = false }: { title: string; children: ReactNode; spatial?: boolean }) {
+export function AppShell({ title, children, spatial = false, back }: { title: string; children: ReactNode; spatial?: boolean; back?: (() => void) | undefined }) {
   const { dark, toggle } = useTheme();
   const install = useInstallPrompt();
   const navigate = useNavigate();
   useEffect(() => {
     if (!isSignedIn()) navigate({ to: "/" });
+    else if (!getState().user?.onboarded) navigate({ to: "/onboarding" });
   }, [navigate]);
 
   return (
     <div className="min-h-screen bg-muted">
       <div className="relative mx-auto flex min-h-screen max-w-md flex-col bg-background shadow-xl">
-        <header className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-background/85 px-4 pb-3 pt-[calc(env(safe-area-inset-top)+0.75rem)] backdrop-blur">
-          <div className="flex items-center gap-2">
-            <QpiMark size={28} />
-            <h1 className="text-lg font-semibold tracking-tight">{title}</h1>
+        <header className="sticky top-0 z-[600] flex items-center justify-between border-b border-border bg-background/85 px-4 pb-3 pt-[calc(env(safe-area-inset-top)+0.75rem)] backdrop-blur">
+          <div className="flex min-w-0 items-center gap-2">
+            {back ? <button onClick={back} aria-label="Back" className="-ml-2 rounded-full p-2 hover:bg-accent"><ArrowLeft className="h-5 w-5" /></button> : <img src={logo} alt="QPi" width={1755} height={885} className="h-7 w-auto" />}
+            <h1 className="truncate text-lg font-semibold tracking-tight">{title}</h1>
           </div>
           <div className="flex gap-1">
             {install && (
@@ -39,7 +41,7 @@ export function AppShell({ title, children, spatial = false }: { title: string; 
           </div>
         </header>
         <main className={spatial ? "flex-1 pb-[calc(64px+env(safe-area-inset-bottom))]" : "flex-1 px-4 py-4 pb-28"}>{children}</main>
-        <nav className="fixed bottom-0 left-1/2 z-10 w-full max-w-md -translate-x-1/2 border-t border-border bg-background/90 pb-[env(safe-area-inset-bottom)] backdrop-blur">
+        <nav className="fixed bottom-0 left-1/2 z-[600] w-full max-w-md -translate-x-1/2 border-t border-border bg-background/90 pb-[env(safe-area-inset-bottom)] backdrop-blur">
           <ul className="grid grid-cols-4">
             {tabs.map(({ to, label, icon: Icon }) => (
               <li key={to}>

@@ -17,3 +17,7 @@
 - Keep Leaflet imports isolated in a lazy-loaded map rendered behind ClientOnly; browser-only mapping must not enter SSR evaluation.
 - Use one filtered producer collection and selected ID for stories, map pins, and offer summaries so discovery stays synchronized.
 - Mock login stores only a unified session flag, accepting legacy role flags for compatibility; storefront access must not depend on an account role.
+- All sandbox data (user, storefront, offers, chat, commitments, wallet) lives in one typed localStorage store (`src/lib/sandbox-store.ts`) so a Cloud backend can replace it in one place.
+- Commitment transitions and escrow effects are pure (`commitments.ts`, `escrow.ts`) and applied together atomically by the store; never mutate wallet or status separately.
+- Personal Trust inputs derive only from commitment history via `activity-trust.ts`; no activity means the bureau seed alone.
+- Every non-discovery map uses the shared lazy `LazyMap`; OSM tiles, Nominatim search throttled to 1 req/s, OSRM routes with straight-line fallback.
