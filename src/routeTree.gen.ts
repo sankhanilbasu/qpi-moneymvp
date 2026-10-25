@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ChatRouteImport } from './routes/chat'
 import { Route as CreateRouteImport } from './routes/create'
 import { Route as DiscoverRouteImport } from './routes/discover'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as ProfileRouteImport } from './routes/profile'
 
 const IndexRoute = IndexRouteImport.update({
@@ -35,6 +36,11 @@ const DiscoverRoute = DiscoverRouteImport.update({
   path: '/discover',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -46,6 +52,7 @@ export interface FileRoutesByFullPath {
   '/chat': typeof ChatRoute
   '/create': typeof CreateRoute
   '/discover': typeof DiscoverRoute
+  '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/chat': typeof ChatRoute
   '/create': typeof CreateRoute
   '/discover': typeof DiscoverRoute
+  '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
 }
 export interface FileRoutesById {
@@ -61,14 +69,23 @@ export interface FileRoutesById {
   '/chat': typeof ChatRoute
   '/create': typeof CreateRoute
   '/discover': typeof DiscoverRoute
+  '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/chat' | '/create' | '/discover' | '/profile'
+  fullPaths:
+    '/' | '/chat' | '/create' | '/discover' | '/onboarding' | '/profile'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/chat' | '/create' | '/discover' | '/profile'
-  id: '__root__' | '/' | '/chat' | '/create' | '/discover' | '/profile'
+  to: '/' | '/chat' | '/create' | '/discover' | '/onboarding' | '/profile'
+  id:
+    | '__root__'
+    | '/'
+    | '/chat'
+    | '/create'
+    | '/discover'
+    | '/onboarding'
+    | '/profile'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,6 +93,7 @@ export interface RootRouteChildren {
   ChatRoute: typeof ChatRoute
   CreateRoute: typeof CreateRoute
   DiscoverRoute: typeof DiscoverRoute
+  OnboardingRoute: typeof OnboardingRoute
   ProfileRoute: typeof ProfileRoute
 }
 
@@ -109,6 +127,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiscoverRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profile': {
       id: '/profile'
       path: '/profile'
@@ -124,6 +149,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChatRoute: ChatRoute,
   CreateRoute: CreateRoute,
   DiscoverRoute: DiscoverRoute,
+  OnboardingRoute: OnboardingRoute,
   ProfileRoute: ProfileRoute,
 }
 export const routeTree = rootRouteImport
