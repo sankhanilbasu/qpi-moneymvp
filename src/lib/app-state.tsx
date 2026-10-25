@@ -1,18 +1,22 @@
 import { useEffect, useState } from "react";
+import { clearSandbox, createUser } from "./sandbox-store";
 
-// Demo-only session, not authentication. All users have the same access:
+// Sandbox session, not authentication. All users have the same access:
 // shopping is the default and storefront setup is available to everyone.
 export function isSignedIn(): boolean {
   if (typeof window === "undefined") return false;
   return localStorage.getItem("qpi.session") === "active" || ["consumer", "producer"].includes(localStorage.getItem("qpi.role") ?? "");
 }
-export function signIn() {
+export function signIn(profile?: { name: string; email: string }) {
   localStorage.setItem("qpi.session", "active");
   localStorage.removeItem("qpi.role");
+  if (profile) createUser(profile.name, profile.email);
 }
+/** Signing out clears every piece of sandbox data on this device. */
 export function signOut() {
   localStorage.removeItem("qpi.session");
   localStorage.removeItem("qpi.role");
+  clearSandbox();
 }
 
 export function useTheme() {
