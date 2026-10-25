@@ -13,3 +13,12 @@
 # Unified welcome
 - [x] Match the uploaded welcome reference and remove role distinctions.
 - [x] Verify role-free login, storefront access, profile, and logout.
+# MVP (sandbox)
+- [x] Brand: header logo and installed-app icons use the official mark.
+- [x] Sandbox login/sign up, onboarding, mocked government ID check.
+- [x] Create wizard saves storefront + offers; offers appear on Discover; edit/pause/delete in Profile.
+- [x] Chat threads with location sharing and commitment cards (accept/decline/counter).
+- [x] Live tracking with free-map routes for delivery/ride commitments.
+- [x] Mocked wallet with escrow holds, releases, refunds and top-ups.
+- [x] Trust score from sandbox activity, with disputes and redemption.
+- [x] Rule tests and end-to-end check.
