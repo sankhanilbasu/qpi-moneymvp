@@ -26,7 +26,7 @@ export const Route = createFileRoute("/discover")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  validateSearch: (s: Record<string, unknown>): { view?: "feed" | "map" } => (s.view === "map" ? { view: "map" } : {}),
+  validateSearch: (s: Record<string, unknown>): { view?: "feed" | "map" } => (s["view"] === "map" ? { view: "map" } : {}),
   component: Discover,
 });
 
