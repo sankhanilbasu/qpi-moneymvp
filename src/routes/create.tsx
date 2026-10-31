@@ -37,7 +37,7 @@ function Create() {
   const [step, setStep] = useState(0);
   const [shop, setShop] = useState({ name: "", category: "kitchen" as CategoryId, description: "" });
   const [location, setLocation] = useState<PickedLocation | null>(null);
-  const [offer, setOffer] = useState({ title: "", price: 10, description: "", photo: undefined as string | undefined });
+  const [offer, setOffer] = useState({ title: "", price: 200, description: "", photo: undefined as string | undefined });
   const [terms, setTerms] = useState({ fulfilment: "pickup" as Fulfilment, schedule: "Weekdays 9am–5pm" });
   useEffect(() => {
     const s = getState();
