@@ -1,6 +1,6 @@
 import riverside from "@/assets/videos/riverside.mp4.asset.json";
 import swift from "@/assets/videos/swift.mp4.asset.json";
-import northline from "@/assets/videos/northline.mp4.asset.json";
+import northline from "@/assets/videos/northline-innova.mp4.asset.json";
 import studio from "@/assets/videos/studio.mp4.asset.json";
 import clay from "@/assets/videos/clay.mp4.asset.json";
 import copperleaf from "@/assets/videos/copperleaf.mp4.asset.json";
