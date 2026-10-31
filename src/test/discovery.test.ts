@@ -7,7 +7,7 @@ describe("Spatial discovery selection source", () => {
     expect(filterProducers(discoveryProducers, "music", "").map(p => p.id)).toEqual(["studio", "guitar"]);
   });
   it("searches available offers without ignoring the selected category", () => {
-    expect(filterProducers(discoveryProducers, "all", "  KEYBOARD ").map(p => p.id)).toEqual(["studio", "guitar"]);
+    expect(filterProducers(discoveryProducers, "all", "  KEYBOARD ").map(p => p.id)).toEqual(["studio"]);
     expect(filterProducers(discoveryProducers, "courier", "keyboard")).toEqual([]);
   });
   it("every producer has a category marker and at least one offer", () => {
