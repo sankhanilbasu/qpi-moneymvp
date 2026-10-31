@@ -19,7 +19,7 @@ export const FeedPost = forwardRef<HTMLElement, { producer: DiscoveryProducer; l
   return (
     <article ref={ref} aria-label={`${producer.name} post`} className={`border-b border-border pb-4 ${selected ? "bg-accent/40" : ""}`}>
       <header className="flex items-center gap-3 px-4 py-3">
-        <div className="w-16 shrink-0 [&_.trust-ring-small]:w-16"><TrustRing name={producer.name} initials={producer.initials} input={producer.trust} avatar={avatar ?? photos[0]} /></div>
+        <div className="w-20 shrink-0"><TrustRing name={producer.name} initials={producer.initials} input={producer.trust} avatar={avatar ?? photos[0]} /></div>
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold">{producer.name}</p>
           <p className="flex items-center gap-1 truncate text-xs text-muted-foreground"><MapPin className="h-3 w-3" />{own ? "Your storefront" : `${category?.label} · ${producer.distance}`}</p>
