@@ -8,23 +8,23 @@ import { legFraction, pointAlong, tripProgress, tripStage } from "@/lib/geo";
 const base: Commitment = { id: "c1", threadId: "t1", producerId: "swift", sellerName: "Swift", item: "Parcel", quantity: 2, unitPrice: 8, total: 16, scheduledFor: 0, fulfilment: "delivery", status: "proposed", createdAt: 0 };
 
 describe("Sandbox escrow", () => {
-  it("starts with a ₹5,000 balance", () => expect(emptyWallet().balance).toBe(STARTING_BALANCE));
+  it("starts with a ₹50,000 balance", () => expect(emptyWallet().balance).toBe(STARTING_BALANCE));
   it("hold moves funds out of the balance into escrow", () => {
     const w = hold(emptyWallet(), "c1", 16, 1);
-    expect(w.balance).toBe(4984); expect(heldTotal(w)).toBe(16);
+    expect(w.balance).toBe(49984); expect(heldTotal(w)).toBe(16);
   });
   it("release pays the seller without returning funds", () => {
     const w = release(hold(emptyWallet(), "c1", 16, 1), "c1", 2);
-    expect(w.balance).toBe(4984); expect(heldTotal(w)).toBe(0); expect(w.ledger[0]?.kind).toBe("release");
+    expect(w.balance).toBe(49984); expect(heldTotal(w)).toBe(0); expect(w.ledger[0]?.kind).toBe("release");
   });
-  it("refund returns the held amount", () => expect(refund(hold(emptyWallet(), "c1", 16, 1), "c1", 2).balance).toBe(5000));
-  it("rejects holds above the balance — no negative balance", () => expect(() => hold(emptyWallet(), "c1", 5000.01, 1)).toThrow());
+  it("refund returns the held amount", () => expect(refund(hold(emptyWallet(), "c1", 16, 1), "c1", 2).balance).toBe(50000));
+  it("rejects holds above the balance — no negative balance", () => expect(() => hold(emptyWallet(), "c1", 50000.01, 1)).toThrow());
   it("rejects double holds and settling without a hold", () => {
     expect(() => hold(hold(emptyWallet(), "c1", 1, 1), "c1", 1, 2)).toThrow();
     expect(() => release(emptyWallet(), "c1", 1)).toThrow();
   });
   it("top-ups must be positive", () => {
-    expect(topUp(emptyWallet(), 50, 1).balance).toBe(5050);
+    expect(topUp(emptyWallet(), 50, 1).balance).toBe(50050);
     expect(() => topUp(emptyWallet(), 0, 1)).toThrow();
   });
 });

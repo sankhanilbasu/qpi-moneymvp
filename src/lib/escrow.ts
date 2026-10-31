@@ -3,7 +3,7 @@ export type LedgerKind = "topup" | "hold" | "release" | "refund";
 export interface LedgerEntry { id: string; kind: LedgerKind; amount: number; at: number; commitmentId?: string | undefined; note: string }
 export interface Wallet { balance: number; holds: Record<string, number>; ledger: LedgerEntry[] }
 
-export const STARTING_BALANCE = 5000;
+export const STARTING_BALANCE = 50000;
 export const emptyWallet = (): Wallet => ({ balance: STARTING_BALANCE, holds: {}, ledger: [] });
 export const heldTotal = (wallet: Wallet) => Object.values(wallet.holds).reduce((sum, value) => sum + value, 0);
 const round = (value: number) => Math.round(value * 100) / 100;
