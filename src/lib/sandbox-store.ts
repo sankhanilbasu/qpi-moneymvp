@@ -2,7 +2,7 @@ import { useSyncExternalStore } from "react";
 import type { CategoryId } from "./discovery";
 import type { LatLng } from "./geo";
 import { transition, type Commitment, type CommitmentAction, type Fulfilment } from "./commitments";
-import { emptyWallet, hold, refund, release, topUp, type Wallet } from "./escrow";
+import { emptyWallet, hold, refund, release, topUp, STARTING_BALANCE, type Wallet } from "./escrow";
 
 /** Browser-only sandbox data. One typed store so Lovable Cloud can replace it later. */
 export type IdStatus = "none" | "pending" | "verified";
@@ -11,19 +11,30 @@ export interface Storefront { name: string; category: CategoryId; position: LatL
 export interface Offer { id: string; title: string; price: number; photo?: string | undefined; description: string; fulfilment: Fulfilment; schedule: string; paused: boolean; createdAt: number }
 export interface Thread { id: string; producerId: string; producerName: string; createdAt: number }
 export interface ChatMessage { id: string; threadId: string; from: "me" | "them" | "system"; at: number; text?: string | undefined; location?: { position: LatLng; label: string } | undefined; commitmentId?: string | undefined }
-export interface SandboxState { user: SandboxUser | null; storefront: Storefront | null; offers: Offer[]; threads: Thread[]; messages: ChatMessage[]; commitments: Commitment[]; wallet: Wallet; likes: string[] }
+export interface SandboxState { user: SandboxUser | null; storefront: Storefront | null; offers: Offer[]; threads: Thread[]; messages: ChatMessage[]; commitments: Commitment[]; wallet: Wallet; likes: string[]; walletBalanceVersion?: number }
 
 export const STORE_KEY = "qpi.sandbox.v1";
-const empty = (): SandboxState => ({ user: null, storefront: null, offers: [], threads: [], messages: [], commitments: [], wallet: emptyWallet(), likes: [] });
+const empty = (): SandboxState => ({ user: null, storefront: null, offers: [], threads: [], messages: [], commitments: [], wallet: emptyWallet(), likes: [], walletBalanceVersion: 1 });
 const SERVER_SNAPSHOT = empty();
 let state: SandboxState | null = null;
 const listeners = new Set<() => void>();
 
+/** One-time balance refresh; subsequent spending and top-ups survive reloads. */
+export function migrateSandboxBalance(saved: SandboxState): SandboxState {
+  if (saved.walletBalanceVersion === 1) return saved;
+  return { ...saved, walletBalanceVersion: 1, wallet: { ...saved.wallet, balance: STARTING_BALANCE } };
+}
+
 export function getState(): SandboxState {
   if (state) return state;
   if (typeof window === "undefined") return SERVER_SNAPSHOT;
-  try { state = { ...empty(), ...(JSON.parse(localStorage.getItem(STORE_KEY) ?? "null") ?? {}) }; } catch { state = empty(); }
-  return state!;
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORE_KEY) ?? "null") as SandboxState | null;
+    const loaded = saved ? { ...empty(), ...saved, walletBalanceVersion: saved.walletBalanceVersion ?? 0 } : empty();
+    state = migrateSandboxBalance(loaded);
+    if (state !== loaded) localStorage.setItem(STORE_KEY, JSON.stringify(state));
+  } catch { state = empty(); }
+  return state;
 }
 function setState(update: (s: SandboxState) => SandboxState) {
   state = update(getState());

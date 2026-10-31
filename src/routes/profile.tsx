@@ -32,7 +32,7 @@ function Profile() {
   return (
     <AppShell title="Profile">
       <section className="flex flex-col items-center gap-1 py-4">
-        <TrustRing name={name} initials={initialsOf(name)} input={trust} avatar={user?.avatar} source="Your sandbox activity" large />
+        <TrustRing name={name} initials={initialsOf(name)} input={trust} avatar={user?.avatar} source="Your sandbox activity" showCalculations={false} large />
         <p className="mt-1 font-semibold">{name}</p>
         <span className="text-xs text-muted-foreground">{commitments.filter(c => c.status === "completed").length} completed · {trust.completedTransactions ? "Built from your activity" : "Starting from the bureau seed"}</span>
       </section>
