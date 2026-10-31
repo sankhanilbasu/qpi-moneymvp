@@ -4,7 +4,8 @@ import { AppShell, Card } from "@/components/AppShell";
 import { TrustRing } from "@/components/TrustRing";
 import { Button } from "@/components/ui/button";
 import { LazyMap } from "@/components/maps/LazyMap";
-import { categories, formatPrice } from "@/lib/discovery";
+import { categories } from "@/lib/discovery";
+import { OfferPrice } from "@/components/OfferPrice";
 import { discoveryAvatars } from "@/lib/discovery-avatars";
 import { useProducers } from "@/lib/marketplace";
 import { openThread } from "@/lib/sandbox-store";
@@ -32,7 +33,8 @@ function OfferPage() {
   const category = categories.find(c => c.id === producer.category);
   const own = producer.kind === "own";
   function chat(offerId?: string) {
-    const threadId = openThread(producer!.id, producer!.name);
+    if (!producer) return;
+    const threadId = openThread(producer.id, producer.name);
     navigate({ to: "/chat/$id", params: { id: threadId }, search: offerId ? { offer: offerId } : {} });
   }
   return (
@@ -48,7 +50,7 @@ function OfferPage() {
           <Card key={offer.id} className="flex gap-3">
             {offer.photo && <img src={offer.photo} alt="" className="h-16 w-16 shrink-0 rounded-lg object-cover" />}
             <div className="min-w-0 flex-1">
-              <div className="flex justify-between gap-2"><p className="font-medium">{offer.name}</p><p className="font-semibold text-primary">{formatPrice(offer.price)}</p></div>
+              <div className="flex flex-wrap justify-between gap-2"><p className="font-medium">{offer.name}</p><OfferPrice offer={offer} /></div>
               <p className="text-xs text-muted-foreground">{offer.detail}</p>
               {!own && <Button size="sm" className="mt-2 rounded-full" onClick={() => chat(offer.id)}>Request</Button>}
             </div>

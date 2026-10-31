@@ -12,7 +12,7 @@ export function allProducers(s: SandboxState, now: number): DiscoveryProducer[] 
   const own: DiscoveryProducer = {
     kind: "own", id: OWN_ID, name: s.storefront.name, initials: initialsOf(s.storefront.name), category: s.storefront.category,
     position: s.storefront.position, distance: "Your storefront", trust: trustFromActivity(s.commitments, now), description: s.storefront.description,
-    offers: live.map(o => ({ id: o.id, name: o.title, price: o.price, detail: `${o.schedule} · ${o.fulfilment === "delivery" ? "Delivery" : "Pickup"}`, fulfilment: o.fulfilment, photo: o.photo })),
+    offers: live.map(o => ({ id: o.id, name: o.title, price: o.price, wholesale: o.wholesale, detail: `${o.schedule} · ${o.fulfilment === "delivery" ? "Delivery" : "Pickup"}`, fulfilment: o.fulfilment, photo: o.photo })),
   };
   return [own, ...discoveryProducers];
 }

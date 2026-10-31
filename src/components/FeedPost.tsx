@@ -3,7 +3,8 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { Eye, Heart, MapPin, MessageCircle } from "lucide-react";
 import { TrustRing } from "./TrustRing";
 import { Button } from "./ui/button";
-import { categories, formatPrice, liveStatus, type DiscoveryProducer } from "@/lib/discovery";
+import { categories, liveStatus, type DiscoveryProducer } from "@/lib/discovery";
+import { OfferPrice } from "./OfferPrice";
 import { discoveryAvatars } from "@/lib/discovery-avatars";
 import { discoveryVideos } from "@/lib/discovery-videos";
 import { openThread, toggleLike } from "@/lib/sandbox-store";
@@ -42,7 +43,7 @@ export const FeedPost = forwardRef<HTMLElement, { producer: DiscoveryProducer; l
       <div className="px-4 text-sm">
         <p className={expanded ? "" : "line-clamp-2"}><span className="font-semibold">{producer.name}</span> {producer.description}</p>
         {!expanded && <button className="text-xs text-muted-foreground" onClick={() => setExpanded(true)}>more</button>}
-        <ul className="mt-2 space-y-0.5 text-xs text-muted-foreground">{producer.offers.map(o => <li key={o.id}>{o.name} · <span className="font-semibold text-primary">{formatPrice(o.price)}</span></li>)}</ul>
+        <ul className="mt-2 space-y-1 text-xs text-muted-foreground">{producer.offers.map(o => <li key={o.id} className="flex flex-wrap items-start justify-between gap-2"><span>{o.name}</span><OfferPrice offer={o} /></li>)}</ul>
         {producer.kind === "demo" && <p className="mt-1 text-[10px] text-muted-foreground">Demo listing</p>}
       </div>
     </article>

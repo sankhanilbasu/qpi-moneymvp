@@ -2,6 +2,7 @@ import { demoProducers, profileTrust } from "./trust-demo";
 import type { TrustInput } from "./trust-score";
 import type { Fulfilment } from "./commitments";
 import type { LatLng } from "./geo";
+import type { OfferPricing } from "./offer-pricing";
 
 export const categories = [
   { id: "kitchen", label: "Cloud Kitchen", mcc: "5812" },
@@ -16,7 +17,7 @@ export const categories = [
   { id: "florist", label: "Florist", mcc: "5992" },
 ] as const;
 export type CategoryId = typeof categories[number]["id"];
-export interface ProducerOffer { id: string; name: string; price: number; detail: string; fulfilment: Fulfilment; photo?: string | undefined }
+export interface ProducerOffer extends OfferPricing { id: string; name: string; detail: string; fulfilment: Fulfilment; photo?: string | undefined }
 export interface DiscoveryProducer {
   id: string; name: string; initials: string; category: CategoryId;
   position: LatLng; distance: string; trust: TrustInput;

@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { pricingError, type OfferPricing } from "@/lib/offer-pricing";
 import type { Fulfilment } from "@/lib/commitments";
 import { categories, formatPrice, SANDBOX_CENTER, type CategoryId } from "@/lib/discovery";
 import { fileToDataUrl } from "@/lib/images";
@@ -38,23 +40,31 @@ function Create() {
   const [shop, setShop] = useState({ name: "", category: "kitchen" as CategoryId, description: "" });
   const [location, setLocation] = useState<PickedLocation | null>(null);
   const [offer, setOffer] = useState({ title: "", price: 200, description: "", photo: undefined as string | undefined });
+  const [wholesaleEnabled, setWholesaleEnabled] = useState(false);
+  const [wholesalePrice, setWholesalePrice] = useState("");
+  const [minUnits, setMinUnits] = useState("");
   const [terms, setTerms] = useState({ fulfilment: "pickup" as Fulfilment, schedule: "Weekdays 9am–5pm" });
   useEffect(() => {
     const s = getState();
     if (s.storefront) { setShop({ name: s.storefront.name, category: s.storefront.category, description: s.storefront.description }); setLocation({ position: s.storefront.position, label: "Saved storefront location" }); }
     else if (s.user?.home) setLocation({ position: s.user.home, label: "Your home location" });
     const existing = edit ? s.offers.find(o => o.id === edit) : undefined;
+    setWholesaleEnabled(!!existing?.wholesale);
+    setWholesalePrice(existing?.wholesale ? String(existing.wholesale.price) : "");
+    setMinUnits(existing?.wholesale ? String(existing.wholesale.minUnits) : "");
     if (existing) { setOffer({ title: existing.title, price: existing.price, description: existing.description, photo: existing.photo }); setTerms({ fulfilment: existing.fulfilment, schedule: existing.schedule }); if (s.storefront) setStep(1); }
   }, [edit]);
 
-  const valid = [shop.name.trim() && shop.description.trim() && location, offer.title.trim() && offer.price > 0, terms.schedule.trim(), true];
+  const pricing: OfferPricing = { price: offer.price, wholesale: wholesaleEnabled ? { price: Number(wholesalePrice), minUnits: Number(minUnits) } : undefined };
+  const priceError = pricingError(pricing);
+  const valid = [shop.name.trim() && shop.description.trim() && location, offer.title.trim() && !priceError, terms.schedule.trim(), true];
   async function photo(file: File) { try { const p = await fileToDataUrl(file, 480); setOffer(o => ({ ...o, photo: p })); } catch (e) { toast.error((e as Error).message); } }
   function publish() {
-    if (!location) return;
+    if (!location || !valid[0] || !valid[1] || !valid[2]) return;
     try {
       saveStorefront({ ...shop, name: shop.name.trim(), position: location.position });
       const existing = edit ? getState().offers.find(o => o.id === edit) : undefined;
-      saveOffer({ id: existing?.id ?? newId("o"), title: offer.title.trim(), price: offer.price, photo: offer.photo, description: offer.description.trim(), fulfilment: terms.fulfilment, schedule: terms.schedule.trim(), paused: existing?.paused ?? false, createdAt: existing?.createdAt ?? Date.now() });
+      saveOffer({ id: existing?.id ?? newId("o"), title: offer.title.trim(), ...pricing, photo: offer.photo, description: offer.description.trim(), fulfilment: terms.fulfilment, schedule: terms.schedule.trim(), paused: existing?.paused ?? false, createdAt: existing?.createdAt ?? Date.now() });
       toast.success(existing ? "Offer updated" : "Offer published to Discover");
       navigate({ to: "/offer/$id", params: { id: "me" } });
     } catch (e) { toast.error((e as Error).message); }
@@ -75,7 +85,13 @@ function Create() {
         </>}
         {step === 1 && <>
           <div className="flex flex-col gap-1.5"><Label htmlFor="title">Offer title</Label><Input id="title" value={offer.title} onChange={e => setOffer({ ...offer, title: e.target.value })} /></div>
-          <div className="flex flex-col gap-1.5"><Label htmlFor="oprice">Price (₹)</Label><Input id="oprice" type="number" min={0.5} step={0.5} value={offer.price} onChange={e => setOffer({ ...offer, price: Number(e.target.value) })} /></div>
+          <div className="flex flex-col gap-1.5"><Label htmlFor="oprice">Retail price per unit (₹)</Label><Input id="oprice" type="number" min={0.01} step={0.01} value={offer.price} onChange={e => setOffer({ ...offer, price: Number(e.target.value) })} /></div>
+          <div className="flex items-center justify-between border-t border-border pt-3"><Label htmlFor="wholesale">Wholesale pricing</Label><Switch id="wholesale" checked={wholesaleEnabled} onCheckedChange={setWholesaleEnabled} /></div>
+          {wholesaleEnabled && <div className="grid grid-cols-2 gap-3">
+            <div className="flex flex-col gap-1.5"><Label htmlFor="wprice">Wholesale price per unit (₹)</Label><Input id="wprice" type="number" inputMode="decimal" min={0.01} step={0.01} value={wholesalePrice} onChange={e => setWholesalePrice(e.target.value)} /></div>
+            <div className="flex flex-col gap-1.5"><Label htmlFor="wunits">Minimum units</Label><Input id="wunits" type="number" inputMode="numeric" min={1} step={1} value={minUnits} onChange={e => setMinUnits(e.target.value)} /></div>
+          </div>}
+          {priceError && <p role="alert" className="text-xs text-destructive">{priceError}</p>}
           <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-border p-3 text-sm text-muted-foreground">
             {offer.photo ? <img src={offer.photo} alt="Offer" className="h-16 w-16 rounded-lg object-cover" /> : <ImagePlus className="h-6 w-6" />}{offer.photo ? "Change photo" : "Add a photo"}
             <input type="file" accept="image/*" className="sr-only" aria-label="Offer photo" onChange={e => { const f = e.target.files?.[0]; if (f) void photo(f); }} />
@@ -89,7 +105,9 @@ function Create() {
         </>}
         {step === 3 && <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
           <dt className="text-muted-foreground">Storefront</dt><dd>{shop.name} · {categories.find(c => c.id === shop.category)?.label}</dd>
-          <dt className="text-muted-foreground">Offer</dt><dd>{offer.title} · {formatPrice(offer.price)}</dd>
+          <dt className="text-muted-foreground">Offer</dt><dd>{offer.title}</dd>
+          <dt className="text-muted-foreground">Retail</dt><dd>{formatPrice(offer.price)} / unit</dd>
+          {pricing.wholesale && <><dt className="text-muted-foreground">Wholesale</dt><dd>{formatPrice(pricing.wholesale.price)} / unit · {pricing.wholesale.minUnits}+ units</dd></>}
           <dt className="text-muted-foreground">Terms</dt><dd>{terms.fulfilment === "delivery" ? "Delivery" : "Pickup"} · {terms.schedule}</dd>
           <dt className="text-muted-foreground">Location</dt><dd className="truncate">{location?.label}</dd>
         </dl>}

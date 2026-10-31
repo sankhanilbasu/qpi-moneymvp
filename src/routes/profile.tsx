@@ -3,6 +3,7 @@ import { BadgeCheck, Mail, Pause, Pencil, Play, Store, Trash2, Wallet } from "lu
 import { AppShell, Card } from "@/components/AppShell";
 import { IdUpload } from "@/components/IdUpload";
 import { TrustRing } from "@/components/TrustRing";
+import { OfferPrice } from "@/components/OfferPrice";
 import { Button } from "@/components/ui/button";
 import { signOut } from "@/lib/app-state";
 import { categories, formatPrice, initialsOf } from "@/lib/discovery";
@@ -49,7 +50,7 @@ function Profile() {
         <div className="flex flex-col gap-2">{offers.map(o => (
           <Card key={o.id} className="flex items-center gap-3 py-3">
             {o.photo && <img src={o.photo} alt="" className="h-12 w-12 rounded-lg object-cover" />}
-            <div className="min-w-0 flex-1"><p className="truncate font-medium">{o.title}</p><p className="text-xs text-muted-foreground">{formatPrice(o.price)} · {o.paused ? "Paused" : "Live"}</p></div>
+            <div className="min-w-0 flex-1"><p className="truncate font-medium">{o.title}</p><OfferPrice offer={o} /><p className="text-xs text-muted-foreground">{o.paused ? "Paused" : "Live"}</p></div>
             <Button asChild size="icon" variant="ghost" aria-label={`Edit ${o.title}`}><Link to="/create" search={{ edit: o.id }}><Pencil /></Link></Button>
             <Button size="icon" variant="ghost" aria-label={o.paused ? `Resume ${o.title}` : `Pause ${o.title}`} onClick={() => saveOffer({ ...o, paused: !o.paused })}>{o.paused ? <Play /> : <Pause />}</Button>
             <Button size="icon" variant="ghost" aria-label={`Delete ${o.title}`} onClick={() => { if (confirm(`Delete "${o.title}"?`)) deleteOffer(o.id); }}><Trash2 /></Button>
