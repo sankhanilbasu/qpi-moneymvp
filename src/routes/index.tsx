@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { signIn } from "@/lib/app-state";
 import { getState } from "@/lib/sandbox-store";
 import welcomeLogo from "@/assets/qpi-logo.png";
-import welcomePaper from "@/assets/welcome-paper.jpg";
+import welcomePaper from "@/assets/welcome-silk.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
