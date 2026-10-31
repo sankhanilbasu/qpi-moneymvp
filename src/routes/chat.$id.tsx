@@ -119,7 +119,7 @@ function NewCommitment({ open, onClose, threadId, producer, offerId, home }: { o
           <div className="flex flex-col gap-1.5"><Label htmlFor="item">Item</Label><Input id="item" value={item} onChange={e => setItem(e.target.value)} /></div>
           <div className="grid grid-cols-2 gap-3">
             <div className="flex flex-col gap-1.5"><Label htmlFor="qty">Quantity</Label><Input id="qty" type="number" min={1} value={qty} onChange={e => setQty(Math.max(1, Math.floor(Number(e.target.value) || 1)))} /></div>
-            <div className="flex flex-col gap-1.5"><Label htmlFor="price">Unit price (£)</Label><Input id="price" type="number" min={0.5} step={0.5} value={price} onChange={e => setPrice(Number(e.target.value))} /></div>
+            <div className="flex flex-col gap-1.5"><Label htmlFor="price">Unit price (₹)</Label><Input id="price" type="number" min={0.5} step={0.5} value={price} onChange={e => setPrice(Number(e.target.value))} /></div>
           </div>
           <div className="flex flex-col gap-1.5"><Label htmlFor="when">Scheduled for</Label><Input id="when" type="datetime-local" value={when} onChange={e => setWhen(e.target.value)} /></div>
           <div className="grid grid-cols-2 gap-2">{(["pickup", "delivery"] as const).map(f => <Button key={f} type="button" variant={fulfilment === f ? "default" : "outline"} onClick={() => setFulfilment(f)}>{f === "pickup" ? "Pickup / in person" : "Delivery / ride"}</Button>)}</div>
