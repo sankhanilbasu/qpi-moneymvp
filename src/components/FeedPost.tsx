@@ -5,6 +5,7 @@ import { TrustRing } from "./TrustRing";
 import { Button } from "./ui/button";
 import { categories, formatPrice, liveStatus, type DiscoveryProducer } from "@/lib/discovery";
 import { discoveryAvatars } from "@/lib/discovery-avatars";
+import { discoveryVideos } from "@/lib/discovery-videos";
 import { openThread, toggleLike } from "@/lib/sandbox-store";
 
 export const FeedPost = forwardRef<HTMLElement, { producer: DiscoveryProducer; liked: boolean; selected: boolean }>(function FeedPost({ producer, liked, selected }, ref) {
@@ -27,10 +28,11 @@ export const FeedPost = forwardRef<HTMLElement, { producer: DiscoveryProducer; l
         {live && <span className="flex items-center gap-1.5 rounded-full border border-border px-2 py-0.5 text-[11px] font-semibold"><span className="live-dot" />Live</span>}
       </header>
       <div className="relative bg-muted">
-        {photos.length ? <div className="feed-photos">{photos.map((src, i) => <img key={i} src={src} alt={`${producer.name} photo ${i + 1}`} loading="lazy" />)}</div>
+        {discoveryVideos[producer.id] ? <video src={discoveryVideos[producer.id]} poster={avatar} className="aspect-square w-full object-cover" autoPlay muted loop playsInline preload="metadata" aria-label={`${producer.name} storefront video (AI-generated)`} />
+          : photos.length ? <div className="feed-photos">{photos.map((src, i) => <img key={i} src={src} alt={`${producer.name} photo ${i + 1}`} loading="lazy" />)}</div>
           : <div className="grid aspect-square place-items-center text-4xl font-semibold text-muted-foreground">{producer.initials}</div>}
         {live && <div className="absolute left-3 top-3 rounded-full bg-background/85 px-2.5 py-1 text-[11px] font-medium backdrop-blur"><Eye className="mr-1 inline h-3 w-3" />Live view · {viewers} watching · Open now <span className="text-muted-foreground">(demo)</span></div>}
-        {photos.length > 1 && <div className="absolute right-3 top-3 rounded-full bg-background/85 px-2 py-0.5 text-[11px]">{photos.length} photos</div>}
+        {!discoveryVideos[producer.id] && photos.length > 1 && <div className="absolute right-3 top-3 rounded-full bg-background/85 px-2 py-0.5 text-[11px]">{photos.length} photos</div>}
       </div>
       <div className="flex items-center gap-1 px-2 pt-2">
         <Button variant="ghost" size="icon" aria-label={liked ? "Unlike" : "Like"} aria-pressed={liked} onClick={() => toggleLike(producer.id)}><Heart className={liked ? "fill-primary text-primary" : ""} /></Button>
