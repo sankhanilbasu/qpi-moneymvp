@@ -6,7 +6,7 @@ import { calculateTrustScore, trustTier, type TrustInput } from "@/lib/trust-sco
 
 const percent = (value: number) => `${(value * 100).toFixed(1)}%`;
 
-export function TrustRing({ name, initials, input, large = false, avatar, onSelect, selected = false, source = "Illustrative transaction history" }: { source?: string | undefined; name: string; initials: string; input: TrustInput; large?: boolean; avatar?: string | undefined; onSelect?: () => void; selected?: boolean }) {
+export function TrustRing({ name, initials, input, large = false, avatar, onSelect, selected = false, source = "Illustrative transaction history", showCalculations = true }: { source?: string | undefined; name: string; initials: string; input: TrustInput; large?: boolean; avatar?: string | undefined; onSelect?: () => void; selected?: boolean; showCalculations?: boolean }) {
   const gradientId = `trust-${useId().replace(/:/g, "")}`;
   const result = calculateTrustScore(input);
   const tier = trustTier(result.score);
@@ -37,6 +37,7 @@ export function TrustRing({ name, initials, input, large = false, avatar, onSele
           <div><p className="trust-tone text-4xl font-semibold tabular-nums">{result.score.toFixed(1)}<span className="ml-1 text-sm font-normal text-muted-foreground">/ 100</span></p><p className="mt-1 text-xs text-muted-foreground">{input.completedTransactions} completed transactions</p></div>
           <span className="text-xs text-muted-foreground">Range 15.0–99.9</span>
         </div>
+        {showCalculations ? <>
         <dl className="divide-y divide-border text-sm">
           <Factor label="Fulfillment consistency · Fc" value={percent(result.fulfillment)} detail={`${input.unitsConsumed} consumed + ${input.unitsDelivered} delivered ÷ (2 × ${input.unitsCommitted} committed). Weight: 50%.`} />
           <Factor label="Schedule adherence · Sa" value={percent(result.schedule)} detail={`Mean of 1 − |due − settled| ÷ window, across ${input.milestones.length} milestones. Early and late deviations count equally. Weight: 30%.`} />
@@ -58,6 +59,14 @@ export function TrustRing({ name, initials, input, large = false, avatar, onSele
           <p className="mt-2 text-xs leading-relaxed text-muted-foreground">Requires effective performance ≥ 95.0 and ≥ 50 completed transactions. Ω = {result.omega.toFixed(1)}{result.armorActive ? "; dispute impact is halved." : "; full dispute impact applies."}</p>
         </section>
         <div className="border-t border-border pt-4 text-xs leading-relaxed text-muted-foreground"><p className="font-medium text-foreground">Final Trust score</p><p className="mt-1">{result.effectivePerformance.toFixed(2)} × (1 − {result.omega.toFixed(1)} × {result.disputeFriction.toFixed(3)}) = {result.unclampedScore.toFixed(2)} → {result.score.toFixed(1)} after clamping to 15.0–99.9.</p></div>
+        </> : <dl className="divide-y divide-border text-sm">
+          <Factor label="Fulfillment consistency" value={percent(result.fulfillment)} detail="How reliably commitments are fulfilled." />
+          <Factor label="Schedule adherence" value={percent(result.schedule)} detail="How closely settlements follow the agreed schedule." />
+          <Factor label="Network reciprocity" value={percent(result.reciprocity)} detail="The variety of people you transact with." />
+          <Factor label="Bureau seed" value={result.bureauSeed.toFixed(1)} detail="Your starting score before native activity builds up." />
+          <Factor label="Dispute friction" value={percent(result.disputeFriction)} detail="The impact of disputes and unresolved commitments." />
+          <Factor label="Reputation Armor" value={result.armorActive ? "Active" : "Inactive"} detail="An established record of reliable activity can reduce dispute impact." />
+        </dl>}
       </DialogContent>
     </Dialog>
   );
