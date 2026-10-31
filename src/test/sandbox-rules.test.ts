@@ -11,11 +11,11 @@ describe("Sandbox escrow", () => {
   it("starts with a ₹5,000 balance", () => expect(emptyWallet().balance).toBe(STARTING_BALANCE));
   it("hold moves funds out of the balance into escrow", () => {
     const w = hold(emptyWallet(), "c1", 16, 1);
-    expect(w.balance).toBe(234); expect(heldTotal(w)).toBe(16);
+    expect(w.balance).toBe(4984); expect(heldTotal(w)).toBe(16);
   });
   it("release pays the seller without returning funds", () => {
     const w = release(hold(emptyWallet(), "c1", 16, 1), "c1", 2);
-    expect(w.balance).toBe(234); expect(heldTotal(w)).toBe(0); expect(w.ledger[0]?.kind).toBe("release");
+    expect(w.balance).toBe(4984); expect(heldTotal(w)).toBe(0); expect(w.ledger[0]?.kind).toBe("release");
   });
   it("refund returns the held amount", () => expect(refund(hold(emptyWallet(), "c1", 16, 1), "c1", 2).balance).toBe(5000));
   it("rejects holds above the balance — no negative balance", () => expect(() => hold(emptyWallet(), "c1", 5000.01, 1)).toThrow());
