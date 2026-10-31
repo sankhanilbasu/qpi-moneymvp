@@ -11,10 +11,10 @@ export interface Storefront { name: string; category: CategoryId; position: LatL
 export interface Offer { id: string; title: string; price: number; photo?: string | undefined; description: string; fulfilment: Fulfilment; schedule: string; paused: boolean; createdAt: number }
 export interface Thread { id: string; producerId: string; producerName: string; createdAt: number }
 export interface ChatMessage { id: string; threadId: string; from: "me" | "them" | "system"; at: number; text?: string | undefined; location?: { position: LatLng; label: string } | undefined; commitmentId?: string | undefined }
-export interface SandboxState { user: SandboxUser | null; storefront: Storefront | null; offers: Offer[]; threads: Thread[]; messages: ChatMessage[]; commitments: Commitment[]; wallet: Wallet }
+export interface SandboxState { user: SandboxUser | null; storefront: Storefront | null; offers: Offer[]; threads: Thread[]; messages: ChatMessage[]; commitments: Commitment[]; wallet: Wallet; likes: string[] }
 
 export const STORE_KEY = "qpi.sandbox.v1";
-const empty = (): SandboxState => ({ user: null, storefront: null, offers: [], threads: [], messages: [], commitments: [], wallet: emptyWallet() });
+const empty = (): SandboxState => ({ user: null, storefront: null, offers: [], threads: [], messages: [], commitments: [], wallet: emptyWallet(), likes: [] });
 const SERVER_SNAPSHOT = empty();
 let state: SandboxState | null = null;
 const listeners = new Set<() => void>();
@@ -82,3 +82,7 @@ export function actOnCommitment(id: string, action: CommitmentAction) {
     return { ...s, wallet, commitments: s.commitments.map(c => (c.id === id ? next : c)), messages: [...s.messages, { id: newId("m"), threadId: current.threadId, from: "system", at: now, text: actionNotes[action.type] }] };
   });
 }
+
+/** Pure like toggle: adds the id once, or removes it. */
+export const toggledLikes = (likes: string[], id: string) => (likes.includes(id) ? likes.filter(l => l !== id) : [...likes, id]);
+export function toggleLike(id: string) { setState(s => ({ ...s, likes: toggledLikes(s.likes ?? [], id) })); }

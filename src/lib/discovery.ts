@@ -44,3 +44,10 @@ export function filterProducers(producers: DiscoveryProducer[], category: Catego
   const query = search.trim().toLowerCase();
   return producers.filter(producer => (category === "all" || producer.category === category) && `${producer.name} ${producer.description} ${categories.find(c => c.id === producer.category)?.label} ${producer.offers.map(o => o.name).join(" ")}`.toLowerCase().includes(query));
 }
+
+/** Demo-only live presence, deterministic per producer and hour. Not real viewer data. */
+export function liveStatus(id: string, now: number) {
+  const hour = Math.floor(now / 3_600_000);
+  let h = hour; for (const ch of id) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return { live: h % 4 !== 0, viewers: 3 + (h % 37) };
+}
