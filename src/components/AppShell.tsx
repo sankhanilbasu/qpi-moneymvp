@@ -27,7 +27,7 @@ export function AppShell({ title, children, spatial = false, back, actions }: { 
         <header className="sticky top-0 z-[600] flex items-center justify-between border-b border-border bg-background/85 px-4 pb-3 pt-[calc(env(safe-area-inset-top)+0.75rem)] backdrop-blur">
           <div className="flex min-w-0 items-center gap-2">
             {back ? <button onClick={back} aria-label="Back" className="-ml-2 rounded-full p-2 hover:bg-accent"><ArrowLeft className="h-5 w-5" /></button> : <img src={logo} alt="QPi" width={1755} height={885} className="h-7 w-auto" />}
-            <h1 className="truncate text-lg font-semibold tracking-tight">{title}</h1>
+            <h1 className="sr-only">{title}</h1>
           </div>
           <div className="flex items-center gap-1">
             {actions}
