@@ -1,12 +1,9 @@
 import { useId } from "react";
-import { Shield, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { calculateTrustScore, trustTier, type TrustInput } from "@/lib/trust-score";
 
-const percent = (value: number) => `${(value * 100).toFixed(1)}%`;
-
-export function TrustRing({ name, initials, input, large = false, avatar, onSelect, selected = false, source = "Illustrative transaction history", showCalculations = true }: { source?: string | undefined; name: string; initials: string; input: TrustInput; large?: boolean; avatar?: string | undefined; onSelect?: () => void; selected?: boolean; showCalculations?: boolean }) {
+export function TrustRing({ name, initials, input, large = false, avatar, onSelect, selected = false, source = "Illustrative transaction history", showHelp = false }: { source?: string | undefined; name: string; initials: string; input: TrustInput; large?: boolean; avatar?: string | undefined; onSelect?: () => void; selected?: boolean; showHelp?: boolean }) {
   const gradientId = `trust-${useId().replace(/:/g, "")}`;
   const result = calculateTrustScore(input);
   const tier = trustTier(result.score);
@@ -19,6 +16,7 @@ export function TrustRing({ name, initials, input, large = false, avatar, onSele
               <circle cx="50" cy="50" r="45" fill="none" stroke={`url(#${gradientId})`} strokeWidth="5" strokeLinecap="round" pathLength="100" strokeDasharray={`${result.score} 100`} transform="rotate(-90 50 50)" className="trust-progress" />
             </svg>
             {avatar ? <img src={avatar} alt="" className="trust-avatar-photo" /> : <span className="trust-initials">{initials}</span>}
+            {showHelp && <span aria-hidden="true" className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full border border-border bg-background text-xs font-semibold text-muted-foreground">?</span>}
           </span>
           <span className="trust-ring-number tabular-nums">{result.score.toFixed(1)}</span>
           {large && <span className="text-sm font-medium text-muted-foreground">Trust score</span>}
@@ -37,41 +35,22 @@ export function TrustRing({ name, initials, input, large = false, avatar, onSele
           <div><p className="trust-tone text-4xl font-semibold tabular-nums">{result.score.toFixed(1)}<span className="ml-1 text-sm font-normal text-muted-foreground">/ 100</span></p><p className="mt-1 text-xs text-muted-foreground">{input.completedTransactions} completed transactions</p></div>
           <span className="text-xs text-muted-foreground">Range 15.0–99.9</span>
         </div>
-        {showCalculations ? <>
         <dl className="divide-y divide-border text-sm">
-          <Factor label="Fulfillment consistency · Fc" value={percent(result.fulfillment)} detail={`${input.unitsConsumed} consumed + ${input.unitsDelivered} delivered ÷ (2 × ${input.unitsCommitted} committed). Weight: 50%.`} />
-          <Factor label="Schedule adherence · Sa" value={percent(result.schedule)} detail={`Mean of 1 − |due − settled| ÷ window, across ${input.milestones.length} milestones. Early and late deviations count equally. Weight: 30%.`} />
-          <Factor label="Network reciprocity · Rnet" value={percent(result.reciprocity)} detail={`min((${input.uniqueCounterparties} unique counterparties ÷ ${input.totalTransactions} transactions) × 3, 1). Weight: 20%.`} />
-          <Factor label="Native performance" value={result.nativePerformance.toFixed(1)} detail="Weighted native ratios × 100, on the same percentage-point scale as the bureau seed." />
-          <Factor label="Bureau Seed" value={result.bureauSeed.toFixed(1)} detail={`Default proxy: 75.0. Five phantom transactions blend the seed with ${input.completedTransactions} native transactions.`} />
-          <Factor label="Effective performance · A_eff" value={result.effectivePerformance.toFixed(1)} detail={`(5 × ${result.bureauSeed.toFixed(1)} + ${input.completedTransactions} × ${result.nativePerformance.toFixed(1)}) ÷ (5 + ${input.completedTransactions}).`} />
-          <Factor label="Dispute friction · D_r" value={percent(result.disputeFriction)} detail={`Raw friction ${percent(result.rawFriction)} + pending penalty ${percent(input.pendingPenalty)}, clamped from −25% to 100%. Negative friction can boost the score.`} />
+          <Factor label="Fulfillment consistency" detail="How reliably commitments are fulfilled." />
+          <Factor label="Schedule adherence" detail="How closely settlements follow the agreed schedule." />
+          <Factor label="Network reciprocity" detail="The variety of people you transact with." />
+          <Factor label="Native performance" detail="Your overall reliability across transactions on QPi." />
+          <Factor label="Bureau seed" detail="Your starting score before activity builds up." />
+          <Factor label="Effective performance" detail="Your starting score combined with your transaction record." />
+          <Factor label="Dispute friction" detail="The impact of disputes and unresolved commitments." />
+          <Factor label="Redemption Arc" detail="Reliable activity and time reduce the impact of past disputes." />
+          <Factor label="Reputation Armor" detail="An established record of reliability can reduce dispute impact." />
         </dl>
-        <section className="border-t border-border pt-4 text-sm">
-          <h3 className="font-semibold">Redemption Arc</h3>
-          {input.escalatedDisputes.length ? input.escalatedDisputes.map((dispute, index) => (
-            <p key={index} className="mt-2 text-xs leading-relaxed text-muted-foreground">Dispute {index + 1}: {percent(dispute.initialFriction)} initial friction · {dispute.cleanTransactions}/12 clean transactions · {dispute.daysElapsed}/180 days.</p>
-          )) : <p className="mt-1 text-xs text-muted-foreground">No escalated disputes.</p>}
-          <p className="mt-2 text-xs leading-relaxed text-muted-foreground">Remaining escalated friction: {percent(result.remainingEscalatedFriction)}. Decay uses the greater of clean transactions ÷ 12 or elapsed days ÷ 180, never below zero.</p>
-        </section>
-        <section className="border-t border-border pt-4 text-sm">
-          <div className="flex items-center justify-between gap-2"><h3 className="flex items-center gap-2 font-semibold">{result.armorActive ? <ShieldCheck className="h-4 w-4 text-trust-high" /> : <Shield className="h-4 w-4 text-muted-foreground" />}Reputation Armor</h3><span className="text-xs font-medium">{result.armorActive ? "Active" : "Inactive"}</span></div>
-          <p className="mt-2 text-xs leading-relaxed text-muted-foreground">Requires effective performance ≥ 95.0 and ≥ 50 completed transactions. Ω = {result.omega.toFixed(1)}{result.armorActive ? "; dispute impact is halved." : "; full dispute impact applies."}</p>
-        </section>
-        <div className="border-t border-border pt-4 text-xs leading-relaxed text-muted-foreground"><p className="font-medium text-foreground">Final Trust score</p><p className="mt-1">{result.effectivePerformance.toFixed(2)} × (1 − {result.omega.toFixed(1)} × {result.disputeFriction.toFixed(3)}) = {result.unclampedScore.toFixed(2)} → {result.score.toFixed(1)} after clamping to 15.0–99.9.</p></div>
-        </> : <dl className="divide-y divide-border text-sm">
-          <Factor label="Fulfillment consistency" value={percent(result.fulfillment)} detail="How reliably commitments are fulfilled." />
-          <Factor label="Schedule adherence" value={percent(result.schedule)} detail="How closely settlements follow the agreed schedule." />
-          <Factor label="Network reciprocity" value={percent(result.reciprocity)} detail="The variety of people you transact with." />
-          <Factor label="Bureau seed" value={result.bureauSeed.toFixed(1)} detail="Your starting score before native activity builds up." />
-          <Factor label="Dispute friction" value={percent(result.disputeFriction)} detail="The impact of disputes and unresolved commitments." />
-          <Factor label="Reputation Armor" value={result.armorActive ? "Active" : "Inactive"} detail="An established record of reliable activity can reduce dispute impact." />
-        </dl>}
       </DialogContent>
     </Dialog>
   );
 }
 
-function Factor({ label, value, detail }: { label: string; value: string; detail: string }) {
-  return <div className="py-3"><div className="flex items-start justify-between gap-3"><dt className="font-medium">{label}</dt><dd className="shrink-0 font-semibold tabular-nums">{value}</dd></div><p className="mt-1 text-xs leading-relaxed text-muted-foreground">{detail}</p></div>;
+function Factor({ label, detail }: { label: string; detail: string }) {
+  return <div className="py-3"><dt className="font-medium">{label}</dt><dd className="mt-1 text-xs leading-relaxed text-muted-foreground">{detail}</dd></div>;
 }
