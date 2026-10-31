@@ -98,14 +98,15 @@ type ProducerLite = ReturnType<typeof useProducers>[number];
 function NewCommitment({ open, onClose, threadId, producer, offerId, home }: { open: boolean; onClose: () => void; threadId: string; producer: ProducerLite; offerId: string | undefined; home: [number, number] | undefined }) {
   const offer = producer.offers.find(o => o.id === offerId) ?? producer.offers[0];
   const [item, setItem] = useState(offer?.name ?? "");
-  const [qty, setQty] = useState(1);
+  const [quantityText, setQuantityText] = useState("1");
+  const qty = Number(quantityText);
   const [price, setPrice] = useState(offer?.price ?? 10);
   const [when, setWhen] = useState(() => new Date(Date.now() + 3_600_000 - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16));
   const [fulfilment, setFulfilment] = useState<Fulfilment>(offer?.fulfilment ?? "pickup");
   const [pickup, setPickup] = useState<PickedLocation | null>({ position: producer.position, label: producer.name });
   const [dropoff, setDropoff] = useState<PickedLocation | null>(home ? { position: home, label: "Your home" } : null);
   useEffect(() => { if (open && offer) { setItem(offer.name); setPrice(offer.price); setFulfilment(offer.fulfilment); } }, [open, offer]);
-  const valid = item.trim() && qty >= 1 && price > 0 && (fulfilment === "pickup" || (pickup && dropoff));
+  const valid = item.trim() && Number.isInteger(qty) && qty >= 1 && price > 0 && (fulfilment === "pickup" || (pickup && dropoff));
   function submit() {
     if (!valid) return;
     proposeCommitment({ threadId, producerId: producer.id, sellerName: producer.name, item: item.trim(), quantity: qty, unitPrice: price, scheduledFor: new Date(when).getTime(), fulfilment, pickup: fulfilment === "delivery" ? pickup?.position : undefined, dropoff: fulfilment === "delivery" ? dropoff?.position : undefined });
@@ -118,7 +119,7 @@ function NewCommitment({ open, onClose, threadId, producer, offerId, home }: { o
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-1.5"><Label htmlFor="item">Item</Label><Input id="item" value={item} onChange={e => setItem(e.target.value)} /></div>
           <div className="grid grid-cols-2 gap-3">
-            <div className="flex flex-col gap-1.5"><Label htmlFor="qty">Quantity</Label><Input id="qty" type="number" min={1} value={qty} onChange={e => setQty(Math.max(1, Math.floor(Number(e.target.value) || 1)))} /></div>
+            <div className="flex flex-col gap-1.5"><Label htmlFor="qty">Quantity</Label><Input id="qty" type="number" inputMode="numeric" min={1} step={1} value={quantityText} onChange={e => setQuantityText(e.target.value)} /></div>
             <div className="flex flex-col gap-1.5"><Label htmlFor="price">Unit price (₹)</Label><Input id="price" type="number" min={0.5} step={0.5} value={price} onChange={e => setPrice(Number(e.target.value))} /></div>
           </div>
           <div className="flex flex-col gap-1.5"><Label htmlFor="when">Scheduled for</Label><Input id="when" type="datetime-local" value={when} onChange={e => setWhen(e.target.value)} /></div>
