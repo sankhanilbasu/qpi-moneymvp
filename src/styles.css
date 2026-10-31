@@ -209,7 +209,7 @@ body { font-family: var(--font-sans); -webkit-tap-highlight-color: transparent; 
 .welcome-screen { position: relative; isolation: isolate; overflow: hidden; margin: 0 auto; max-width: 448px; min-height: 620px; height: 100dvh; background: var(--welcome-background); color: var(--welcome-foreground); display: grid; grid-template-rows: 1.25fr 0.8fr 0.65fr; padding: calc(48px + env(safe-area-inset-top)) 28px calc(64px + env(safe-area-inset-bottom)); }
 .welcome-paper { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
 .welcome-brand { display: flex; align-items: end; justify-content: center; padding-bottom: 24px; }
-.welcome-logo { width: 280px; max-width: 100%; height: auto; }
+.welcome-logo { width: 252px; max-width: 90%; height: auto; transform: translateY(-10dvh); }
 .welcome-tagline { display: flex; align-items: center; justify-content: center; text-align: center; font-family: var(--font-tagline); font-size: 30px; font-weight: 600; line-height: 1.22; letter-spacing: -0.01em; }
 .welcome-actions { display: flex; flex-direction: column; justify-content: end; gap: 12px; }
 .welcome-login, .welcome-signup { width: 100%; height: 58px; border-radius: 999px; font-size: 20px; font-weight: 500; border: none; box-shadow: none; }
