@@ -243,3 +243,11 @@ body { font-family: var(--font-sans); -webkit-tap-highlight-color: transparent; 
 .map-offer-summary { position: absolute; left: 12px; right: 12px; bottom: 30px; z-index: 10; max-height: 70%; overflow-y: auto; background: var(--background); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--map-shadow); padding: 14px; }
 .discovery-leaflet .leaflet-control-attribution { background: var(--background); color: var(--muted-foreground); font-size: 10px; }
 .discovery-leaflet .leaflet-control-attribution a { color: var(--primary); }
+
+.discovery-feed-layout { display: flex; flex-direction: column; }
+.feed-chips { display: flex; gap: 8px; overflow-x: auto; padding: 4px 16px 12px; scrollbar-width: none; }
+.feed-chips > * { flex-shrink: 0; }
+.feed-photos { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.feed-photos > img { flex: 0 0 100%; aspect-ratio: 1; object-fit: cover; scroll-snap-align: center; }
+.live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--destructive); animation: live-pulse 1.4s ease-in-out infinite; }
+@keyframes live-pulse { 50% { opacity: .35; transform: scale(.8); } }

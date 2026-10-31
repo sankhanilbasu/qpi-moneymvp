@@ -12,7 +12,7 @@ const tabs = [
   { to: "/profile", label: "Profile", icon: User },
 ] as const;
 
-export function AppShell({ title, children, spatial = false, back }: { title: string; children: ReactNode; spatial?: boolean; back?: (() => void) | undefined }) {
+export function AppShell({ title, children, spatial = false, back, actions }: { title: string; children: ReactNode; spatial?: boolean; back?: (() => void) | undefined; actions?: ReactNode }) {
   const { dark, toggle } = useTheme();
   const install = useInstallPrompt();
   const navigate = useNavigate();
@@ -29,7 +29,8 @@ export function AppShell({ title, children, spatial = false, back }: { title: st
             {back ? <button onClick={back} aria-label="Back" className="-ml-2 rounded-full p-2 hover:bg-accent"><ArrowLeft className="h-5 w-5" /></button> : <img src={logo} alt="QPi" width={1755} height={885} className="h-7 w-auto" />}
             <h1 className="truncate text-lg font-semibold tracking-tight">{title}</h1>
           </div>
-          <div className="flex gap-1">
+          <div className="flex items-center gap-1">
+            {actions}
             {install && (
               <button onClick={install} aria-label="Install app" className="rounded-full p-2 text-primary hover:bg-accent">
                 <Download className="h-5 w-5" />
