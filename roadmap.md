@@ -14,6 +14,7 @@
 - [x] Match the uploaded welcome reference and remove role distinctions.
 - [x] Verify role-free login, storefront access, profile, and logout.
 # MVP (sandbox)
+- [ ] Add retail/wholesale offer pricing with threshold units and verify creation and quantity-based requests.
 - [x] Brand: header logo and installed-app icons use the official mark.
 - [x] Sandbox login/sign up, onboarding, mocked government ID check.
 - [x] Create wizard saves storefront + offers; offers appear on Discover; edit/pause/delete in Profile.
