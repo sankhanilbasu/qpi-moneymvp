@@ -7,7 +7,6 @@ import { Label } from "@/components/ui/label";
 import { signIn } from "@/lib/app-state";
 import { getState } from "@/lib/sandbox-store";
 import welcomeLogo from "@/assets/qpi-logo.png";
-import welcomePaper from "@/assets/welcome-paper.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -38,7 +37,6 @@ function Welcome() {
   return (
     <div className="min-h-screen bg-muted">
       <main className="welcome-screen">
-        <img src={welcomePaper} alt="" width={768} height={1536} className="welcome-paper" />
         <div className="welcome-brand">
           <h1 className="sr-only">QPi.money</h1>
           <img src={welcomeLogo} alt="QPi" width={1755} height={885} className="welcome-logo" />
