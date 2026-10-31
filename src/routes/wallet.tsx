@@ -33,7 +33,7 @@ function WalletPage() {
         <p className="mt-1 text-3xl font-semibold tabular-nums">{formatPrice(wallet.balance)}</p>
         <p className="text-xs opacity-80">{formatPrice(heldTotal(wallet))} held in escrow</p>
       </Card>
-      <Button className="mt-3 h-11 w-full rounded-xl" variant="outline" onClick={() => { topUpWallet(50); toast.success("Added £50 sandbox funds"); }}><Plus />Top up £50 (Sandbox)</Button>
+      <Button className="mt-3 h-11 w-full rounded-xl" variant="outline" onClick={() => { topUpWallet(1000); toast.success("Added ₹1,000 sandbox funds"); }}><Plus />Top up ₹1,000 (Sandbox)</Button>
       <h2 className="mb-2 mt-5 text-sm font-semibold text-muted-foreground">History</h2>
       {!wallet.ledger.length && <p className="py-8 text-center text-sm text-muted-foreground">No transactions yet.</p>}
       <ul className="divide-y divide-border">

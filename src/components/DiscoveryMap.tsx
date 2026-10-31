@@ -8,7 +8,7 @@ import { CategoryIcon } from "./CategoryIcon";
 import { categories, type DiscoveryProducer } from "@/lib/discovery";
 
 interface MapProps { producers: DiscoveryProducer[]; selectedId: string | null; onSelect: (id: string) => void }
-const center: [number, number] = [51.52, -0.077];
+const center: [number, number] = [19.06, 72.836];
 
 function MapContents({ producers, selectedId, onSelect }: MapProps) {
   const map = useMap();

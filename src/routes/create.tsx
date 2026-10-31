@@ -75,7 +75,7 @@ function Create() {
         </>}
         {step === 1 && <>
           <div className="flex flex-col gap-1.5"><Label htmlFor="title">Offer title</Label><Input id="title" value={offer.title} onChange={e => setOffer({ ...offer, title: e.target.value })} /></div>
-          <div className="flex flex-col gap-1.5"><Label htmlFor="oprice">Price (£)</Label><Input id="oprice" type="number" min={0.5} step={0.5} value={offer.price} onChange={e => setOffer({ ...offer, price: Number(e.target.value) })} /></div>
+          <div className="flex flex-col gap-1.5"><Label htmlFor="oprice">Price (₹)</Label><Input id="oprice" type="number" min={0.5} step={0.5} value={offer.price} onChange={e => setOffer({ ...offer, price: Number(e.target.value) })} /></div>
           <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-border p-3 text-sm text-muted-foreground">
             {offer.photo ? <img src={offer.photo} alt="Offer" className="h-16 w-16 rounded-lg object-cover" /> : <ImagePlus className="h-6 w-6" />}{offer.photo ? "Change photo" : "Add a photo"}
             <input type="file" accept="image/*" className="sr-only" aria-label="Offer photo" onChange={e => { const f = e.target.files?.[0]; if (f) void photo(f); }} />
