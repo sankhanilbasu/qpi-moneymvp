@@ -16,7 +16,7 @@ export function TrustRing({ name, initials, input, large = false, avatar, onSele
               <circle cx="50" cy="50" r="45" fill="none" stroke={`url(#${gradientId})`} strokeWidth="5" strokeLinecap="round" pathLength="100" strokeDasharray={`${result.score} 100`} transform="rotate(-90 50 50)" className="trust-progress" />
             </svg>
             {avatar ? <img src={avatar} alt="" className="trust-avatar-photo" /> : <span className="trust-initials">{initials}</span>}
-            {showHelp && <span aria-hidden="true" className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full border border-border bg-background text-xs font-semibold text-muted-foreground">?</span>}
+            {showHelp && <span aria-hidden="true" className="absolute left-1/2 top-1 -translate-x-1/2 flex h-5 w-5 items-center justify-center rounded-full border border-border bg-background text-xs font-semibold text-muted-foreground">?</span>}
           </span>
           <span className="trust-ring-number tabular-nums">{result.score.toFixed(1)}</span>
           {large && <span className="text-sm font-medium text-muted-foreground">Trust score</span>}
