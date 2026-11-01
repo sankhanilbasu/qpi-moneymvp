@@ -7,7 +7,11 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
  * Install affordance. Renders the trigger only when the app can still be
  * installed: a native browser prompt where supported, or guided iOS steps.
  */
-export function InstallApp({ children, className = "" }: { children: ReactNode; className?: string }) {
+export function InstallApp({
+  children,
+  className = "",
+  ...rest
+}: { children: ReactNode; className?: string } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   const state = useInstallState();
   const [open, setOpen] = useState(false);
 
@@ -15,7 +19,7 @@ export function InstallApp({ children, className = "" }: { children: ReactNode; 
 
   if (state.kind === "prompt") {
     return (
-      <button type="button" onClick={() => void state.install()} className={className}>
+      <button type="button" onClick={() => void state.install()} className={className} {...rest}>
         {children}
       </button>
     );
@@ -23,7 +27,7 @@ export function InstallApp({ children, className = "" }: { children: ReactNode; 
 
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)} className={className}>
+      <button type="button" onClick={() => setOpen(true)} className={className} {...rest}>
         {children}
       </button>
       <Dialog open={open} onOpenChange={setOpen}>
