@@ -57,8 +57,12 @@ export type InstallState =
 
 export function useInstallState(): InstallState {
   const [evt, setEvt] = useState<BIPEvent | null>(null);
-  const [installed, setInstalled] = useState(isInstalled);
+  // Start "unknown" so SSR and first client render match; resolve after mount.
+  const [installed, setInstalled] = useState<boolean | null>(null);
+  const [ios, setIos] = useState(false);
   useEffect(() => {
+    setInstalled(isInstalled());
+    setIos(isIos());
     const onBip = (e: Event) => {
       e.preventDefault();
       setEvt(e as BIPEvent);
@@ -74,6 +78,7 @@ export function useInstallState(): InstallState {
       window.removeEventListener("appinstalled", onInstalled);
     };
   }, []);
+  if (installed === null) return { kind: "unavailable" };
   if (installed) return { kind: "installed" };
   if (evt)
     return {
@@ -83,7 +88,7 @@ export function useInstallState(): InstallState {
         setEvt(null);
       },
     };
-  if (isIos()) return { kind: "ios" };
+  if (ios) return { kind: "ios" };
   return { kind: "unavailable" };
 }
 
