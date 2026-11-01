@@ -31,11 +31,9 @@ export function AppShell({ title, children, spatial = false, back, actions }: { 
           </div>
           <div className="flex items-center gap-1">
             {actions}
-            {install && (
-              <button onClick={install} aria-label="Install app" className="rounded-full p-2 text-primary hover:bg-accent">
-                <Download className="h-5 w-5" />
-              </button>
-            )}
+            <InstallApp className="rounded-full p-2 text-primary hover:bg-accent" aria-label="Install app">
+              <Download className="h-5 w-5" />
+            </InstallApp>
             <button onClick={toggle} aria-label="Toggle theme" className="rounded-full p-2 hover:bg-accent">
               {dark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </button>
