@@ -216,6 +216,8 @@ body { font-family: var(--font-sans); -webkit-tap-highlight-color: transparent; 
 .welcome-login { background: var(--welcome-copper); color: var(--welcome-button-text); }
 .welcome-login:hover { background: var(--welcome-copper); filter: brightness(0.96); }
 .welcome-signup, .welcome-signup:disabled { background: var(--welcome-secondary); color: var(--welcome-foreground); opacity: 1; }
+.welcome-install { display: inline-flex; align-items: center; justify-content: center; gap: 8px; align-self: center; padding: 8px 18px; border-radius: 999px; font-size: 14px; font-weight: 500; color: var(--welcome-copper); background: transparent; border: 1px solid color-mix(in srgb, var(--welcome-copper) 45%, transparent); cursor: pointer; }
+.welcome-install:hover { background: color-mix(in srgb, var(--welcome-copper) 10%, transparent); }
 .discovery-layout { width: 100%; min-width: 0; height: calc(100dvh - 130px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); min-height: 600px; max-height: 1000px; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(250px, 1fr) minmax(340px, 2fr); }
 .discovery-stories { min-width: 0; min-height: 0; display: flex; flex-direction: column; justify-content: center; gap: 8px; padding: 12px 0; }
 .story-scroll { display: flex; gap: 14px; overflow-x: auto; padding: 4px 16px 12px; scrollbar-width: thin; }
