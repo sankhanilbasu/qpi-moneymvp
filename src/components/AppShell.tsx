@@ -1,8 +1,9 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Compass, MessageCircle, PlusSquare, User, Moon, Sun, Download, ArrowLeft } from "lucide-react";
 import { useEffect, type ReactNode } from "react";
-import { isSignedIn, useInstallPrompt, useTheme } from "@/lib/app-state";
+import { isSignedIn, useTheme } from "@/lib/app-state";
 import { getState } from "@/lib/sandbox-store";
+import { InstallApp } from "@/components/InstallApp";
 import logo from "@/assets/qpi-logo.png";
 
 const tabs = [
