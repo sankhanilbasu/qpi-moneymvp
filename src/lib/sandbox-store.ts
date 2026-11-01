@@ -3,12 +3,13 @@ import type { CategoryId } from "./discovery";
 import type { LatLng } from "./geo";
 import { transition, type Commitment, type CommitmentAction, type Fulfilment } from "./commitments";
 import { emptyWallet, hold, refund, release, topUp, STARTING_BALANCE, type Wallet } from "./escrow";
+import { pricingError, type OfferPricing } from "./offer-pricing";
 
 /** Browser-only sandbox data. One typed store so Lovable Cloud can replace it later. */
 export type IdStatus = "none" | "pending" | "verified";
 export interface SandboxUser { name: string; email: string; avatar?: string | undefined; home?: LatLng | undefined; idStatus: IdStatus; idFileName?: string | undefined; onboarded: boolean }
 export interface Storefront { name: string; category: CategoryId; position: LatLng; description: string }
-export interface Offer { id: string; title: string; price: number; photo?: string | undefined; description: string; fulfilment: Fulfilment; schedule: string; paused: boolean; createdAt: number }
+export interface Offer extends OfferPricing { id: string; title: string; photo?: string | undefined; description: string; fulfilment: Fulfilment; schedule: string; paused: boolean; createdAt: number }
 export interface Thread { id: string; producerId: string; producerName: string; createdAt: number }
 export interface ChatMessage { id: string; threadId: string; from: "me" | "them" | "system"; at: number; text?: string | undefined; location?: { position: LatLng; label: string } | undefined; commitmentId?: string | undefined }
 export interface SandboxState { user: SandboxUser | null; storefront: Storefront | null; offers: Offer[]; threads: Thread[]; messages: ChatMessage[]; commitments: Commitment[]; wallet: Wallet; likes: string[]; walletBalanceVersion?: number }
@@ -55,6 +56,8 @@ export function updateUser(patch: Partial<SandboxUser>) {
 }
 export function saveStorefront(storefront: Storefront) { setState(s => ({ ...s, storefront })); }
 export function saveOffer(offer: Offer) {
+  const error = pricingError(offer);
+  if (error) throw new Error(error);
   setState(s => ({ ...s, offers: s.offers.some(o => o.id === offer.id) ? s.offers.map(o => (o.id === offer.id ? offer : o)) : [offer, ...s.offers] }));
 }
 export function deleteOffer(id: string) { setState(s => ({ ...s, offers: s.offers.filter(o => o.id !== id) })); }

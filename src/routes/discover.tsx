@@ -8,7 +8,8 @@ import { AppShell } from "@/components/AppShell";
 import { TrustRing } from "@/components/TrustRing";
 import { Button } from "@/components/ui/button";
 import { CategoryIcon } from "@/components/CategoryIcon";
-import { categories, filterProducers, formatPrice, type CategoryId } from "@/lib/discovery";
+import { categories, filterProducers, type CategoryId } from "@/lib/discovery";
+import { OfferPrice } from "@/components/OfferPrice";
 import { useProducers } from "@/lib/marketplace";
 import { Link } from "@tanstack/react-router";
 import { discoveryAvatars } from "@/lib/discovery-avatars";
@@ -72,7 +73,7 @@ function Discover() {
             <div className="flex items-start gap-3"><TrustRing name={selected.name} initials={selected.initials} input={selected.trust} avatar={discoveryAvatars[selected.id]} /><div className="min-w-0 flex-1"><h3 className="pr-6 text-base font-semibold leading-snug">{selected.name}</h3><p className="mt-1 text-xs text-muted-foreground">{selectedCategory?.label} · MCC {selectedCategory?.mcc}</p><p className="mt-2 flex items-center gap-1 text-xs text-muted-foreground"><MapPin className="h-3 w-3" />{selected.distance} away · Trust score</p></div><Button variant="ghost" size="icon" className="absolute right-2 top-2 h-7 w-7" aria-label="Close offer summary" onClick={() => setSelectedId(null)}><X /></Button></div>
             <p className="mt-3 text-xs leading-relaxed text-muted-foreground">{selected.description}</p>
             <h4 className="mt-3 text-xs font-semibold">Available offers</h4>
-            <ul className="mt-1 divide-y divide-border">{selected.offers.map(offer => <li key={offer.id} className="py-2"><div className="flex items-start justify-between gap-3 text-sm"><span className="font-medium">{offer.name}</span><span className="shrink-0 font-semibold text-primary">{formatPrice(offer.price)}</span></div><p className="mt-1 text-xs text-muted-foreground">{offer.detail}</p></li>)}</ul>
+            <ul className="mt-1 divide-y divide-border">{selected.offers.map(offer => <li key={offer.id} className="py-2"><div className="flex flex-wrap items-start justify-between gap-3 text-sm"><span className="font-medium">{offer.name}</span><OfferPrice offer={offer} /></div><p className="mt-1 text-xs text-muted-foreground">{offer.detail}</p></li>)}</ul>
             <Button asChild className="mt-2 w-full rounded-full"><Link to="/offer/$id" params={{ id: selected.id }}>{selected.kind === "own" ? "View your storefront" : "View offers & message"}</Link></Button>
           </article>}
         </section>}

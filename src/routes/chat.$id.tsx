@@ -11,6 +11,8 @@ import { LazyMap } from "@/components/maps/LazyMap";
 import { LocationPicker, type PickedLocation } from "@/components/maps/LocationPicker";
 import type { Commitment, CommitmentAction, Fulfilment } from "@/lib/commitments";
 import { formatPrice, SANDBOX_CENTER } from "@/lib/discovery";
+import { unitPriceForQuantity } from "@/lib/offer-pricing";
+import { OfferPrice } from "@/components/OfferPrice";
 import { useProducers } from "@/lib/marketplace";
 import { actOnCommitment, proposeCommitment, sendMessage, useSandbox } from "@/lib/sandbox-store";
 
@@ -105,7 +107,7 @@ function NewCommitment({ open, onClose, threadId, producer, offerId, home }: { o
   const [fulfilment, setFulfilment] = useState<Fulfilment>(offer?.fulfilment ?? "pickup");
   const [pickup, setPickup] = useState<PickedLocation | null>({ position: producer.position, label: producer.name });
   const [dropoff, setDropoff] = useState<PickedLocation | null>(home ? { position: home, label: "Your home" } : null);
-  useEffect(() => { if (open && offer) { setItem(offer.name); setPrice(offer.price); setFulfilment(offer.fulfilment); } }, [open, offer]);
+  useEffect(() => { if (open && offer) { setItem(offer.name); setQuantityText("1"); setPrice(unitPriceForQuantity(offer, 1)); setFulfilment(offer.fulfilment); } }, [open, offer]);
   const valid = item.trim() && Number.isInteger(qty) && qty >= 1 && price > 0 && (fulfilment === "pickup" || (pickup && dropoff));
   function submit() {
     if (!valid) return;
@@ -119,9 +121,10 @@ function NewCommitment({ open, onClose, threadId, producer, offerId, home }: { o
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-1.5"><Label htmlFor="item">Item</Label><Input id="item" value={item} onChange={e => setItem(e.target.value)} /></div>
           <div className="grid grid-cols-2 gap-3">
-            <div className="flex flex-col gap-1.5"><Label htmlFor="qty">Quantity</Label><Input id="qty" type="number" inputMode="numeric" min={1} step={1} value={quantityText} onChange={e => setQuantityText(e.target.value)} /></div>
+            <div className="flex flex-col gap-1.5"><Label htmlFor="qty">Quantity</Label><Input id="qty" type="number" inputMode="numeric" min={1} step={1} value={quantityText} onChange={e => { setQuantityText(e.target.value); if (offer) setPrice(unitPriceForQuantity(offer, Number(e.target.value))); }} /></div>
             <div className="flex flex-col gap-1.5"><Label htmlFor="price">Unit price (₹)</Label><Input id="price" type="number" min={0.5} step={0.5} value={price} onChange={e => setPrice(Number(e.target.value))} /></div>
           </div>
+          {offer?.wholesale && <OfferPrice offer={offer} />}
           <div className="flex flex-col gap-1.5"><Label htmlFor="when">Scheduled for</Label><Input id="when" type="datetime-local" value={when} onChange={e => setWhen(e.target.value)} /></div>
           <div className="grid grid-cols-2 gap-2">{(["pickup", "delivery"] as const).map(f => <Button key={f} type="button" variant={fulfilment === f ? "default" : "outline"} onClick={() => setFulfilment(f)}>{f === "pickup" ? "Pickup / in person" : "Delivery / ride"}</Button>)}</div>
           {fulfilment === "delivery" && <>
