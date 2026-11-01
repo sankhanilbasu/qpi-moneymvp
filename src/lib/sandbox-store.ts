@@ -12,10 +12,10 @@ export interface Storefront { name: string; category: CategoryId; position: LatL
 export interface Offer extends OfferPricing { id: string; title: string; photo?: string | undefined; description: string; fulfilment: Fulfilment; schedule: string; paused: boolean; createdAt: number }
 export interface Thread { id: string; producerId: string; producerName: string; createdAt: number }
 export interface ChatMessage { id: string; threadId: string; from: "me" | "them" | "system"; at: number; text?: string | undefined; location?: { position: LatLng; label: string } | undefined; commitmentId?: string | undefined }
-export interface SandboxState { user: SandboxUser | null; storefront: Storefront | null; offers: Offer[]; threads: Thread[]; messages: ChatMessage[]; commitments: Commitment[]; wallet: Wallet; likes: string[]; walletBalanceVersion?: number }
+export interface SandboxState { user: SandboxUser | null; storefront: Storefront | null; offers: Offer[]; threads: Thread[]; messages: ChatMessage[]; commitments: Commitment[]; wallet: Wallet; likes: string[]; walletBalanceVersion?: number; storefrontPurgeVersion?: number }
 
 export const STORE_KEY = "qpi.sandbox.v1";
-const empty = (): SandboxState => ({ user: null, storefront: null, offers: [], threads: [], messages: [], commitments: [], wallet: emptyWallet(), likes: [], walletBalanceVersion: 1 });
+const empty = (): SandboxState => ({ user: null, storefront: null, offers: [], threads: [], messages: [], commitments: [], wallet: emptyWallet(), likes: [], walletBalanceVersion: 1, storefrontPurgeVersion: 1 });
 const SERVER_SNAPSHOT = empty();
 let state: SandboxState | null = null;
 const listeners = new Set<() => void>();
@@ -26,13 +26,19 @@ export function migrateSandboxBalance(saved: SandboxState): SandboxState {
   return { ...saved, walletBalanceVersion: 1, wallet: { ...saved.wallet, balance: STARTING_BALANCE } };
 }
 
+/** One-time removal of user-created storefronts and offers; demo storefronts are unaffected. */
+export function purgeUserStorefronts(saved: SandboxState): SandboxState {
+  if (saved.storefrontPurgeVersion === 1) return saved;
+  return { ...saved, storefrontPurgeVersion: 1, storefront: null, offers: [] };
+}
+
 export function getState(): SandboxState {
   if (state) return state;
   if (typeof window === "undefined") return SERVER_SNAPSHOT;
   try {
     const saved = JSON.parse(localStorage.getItem(STORE_KEY) ?? "null") as SandboxState | null;
-    const loaded = saved ? { ...empty(), ...saved, walletBalanceVersion: saved.walletBalanceVersion ?? 0 } : empty();
-    state = migrateSandboxBalance(loaded);
+    const loaded = saved ? { ...empty(), ...saved, walletBalanceVersion: saved.walletBalanceVersion ?? 0, storefrontPurgeVersion: saved.storefrontPurgeVersion ?? 0 } : empty();
+    state = purgeUserStorefronts(migrateSandboxBalance(loaded));
     if (state !== loaded) localStorage.setItem(STORE_KEY, JSON.stringify(state));
   } catch { state = empty(); }
   return state;
