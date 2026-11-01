@@ -1,8 +1,9 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Compass, MessageCircle, PlusSquare, User, Moon, Sun, Download, ArrowLeft } from "lucide-react";
 import { useEffect, type ReactNode } from "react";
-import { isSignedIn, useInstallPrompt, useTheme } from "@/lib/app-state";
+import { isSignedIn, useTheme } from "@/lib/app-state";
 import { getState } from "@/lib/sandbox-store";
+import { InstallApp } from "@/components/InstallApp";
 import logo from "@/assets/qpi-logo.png";
 
 const tabs = [
@@ -14,7 +15,6 @@ const tabs = [
 
 export function AppShell({ title, children, spatial = false, back, actions }: { title: string; children: ReactNode; spatial?: boolean; back?: (() => void) | undefined; actions?: ReactNode }) {
   const { dark, toggle } = useTheme();
-  const install = useInstallPrompt();
   const navigate = useNavigate();
   useEffect(() => {
     if (!isSignedIn()) navigate({ to: "/" });
@@ -31,11 +31,9 @@ export function AppShell({ title, children, spatial = false, back, actions }: { 
           </div>
           <div className="flex items-center gap-1">
             {actions}
-            {install && (
-              <button onClick={install} aria-label="Install app" className="rounded-full p-2 text-primary hover:bg-accent">
-                <Download className="h-5 w-5" />
-              </button>
-            )}
+            <InstallApp className="rounded-full p-2 text-primary hover:bg-accent" aria-label="Install app">
+              <Download className="h-5 w-5" />
+            </InstallApp>
             <button onClick={toggle} aria-label="Toggle theme" className="rounded-full p-2 hover:bg-accent">
               {dark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </button>

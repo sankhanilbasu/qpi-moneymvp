@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { signIn } from "@/lib/app-state";
 import { getState } from "@/lib/sandbox-store";
+import { InstallApp } from "@/components/InstallApp";
+import { Download } from "lucide-react";
 import welcomeLogo from "@/assets/qpi-logo.png";
 import welcomePaper from "@/assets/welcome-silk.jpg";
 
@@ -47,6 +49,10 @@ function Welcome() {
         <div className="welcome-actions">
           <Button onClick={() => setMode("login")} className="welcome-login">Login</Button>
           <Button variant="secondary" onClick={() => setMode("signup")} className="welcome-signup">Sign up</Button>
+          <InstallApp className="welcome-install">
+            <Download className="h-4 w-4" />
+            Install app
+          </InstallApp>
         </div>
       </main>
       <Dialog open={mode !== null} onOpenChange={open => !open && setMode(null)}>

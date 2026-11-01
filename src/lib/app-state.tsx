@@ -36,20 +36,64 @@ export function useTheme() {
 }
 
 type BIPEvent = Event & { prompt: () => Promise<void> };
-export function useInstallPrompt() {
+
+function isIos(): boolean {
+  if (typeof navigator === "undefined") return false;
+  return /iphone|ipad|ipod/i.test(navigator.userAgent);
+}
+function isInstalled(): boolean {
+  if (typeof window === "undefined") return false;
+  return (
+    window.matchMedia("(display-mode: standalone)").matches ||
+    (navigator as { standalone?: boolean }).standalone === true
+  );
+}
+
+export type InstallState =
+  | { kind: "prompt"; install: () => Promise<void> } // browser offers native prompt (Chrome/Android/Edge)
+  | { kind: "ios" } // iOS Safari: no programmatic prompt, show manual steps
+  | { kind: "installed" }
+  | { kind: "unavailable" }; // desktop browser without install support
+
+export function useInstallState(): InstallState {
   const [evt, setEvt] = useState<BIPEvent | null>(null);
+  // Start "unknown" so SSR and first client render match; resolve after mount.
+  const [installed, setInstalled] = useState<boolean | null>(null);
+  const [ios, setIos] = useState(false);
   useEffect(() => {
-    const h = (e: Event) => {
+    setInstalled(isInstalled());
+    setIos(isIos());
+    const onBip = (e: Event) => {
       e.preventDefault();
       setEvt(e as BIPEvent);
     };
-    window.addEventListener("beforeinstallprompt", h);
-    return () => window.removeEventListener("beforeinstallprompt", h);
+    const onInstalled = () => {
+      setInstalled(true);
+      setEvt(null);
+    };
+    window.addEventListener("beforeinstallprompt", onBip);
+    window.addEventListener("appinstalled", onInstalled);
+    return () => {
+      window.removeEventListener("beforeinstallprompt", onBip);
+      window.removeEventListener("appinstalled", onInstalled);
+    };
   }, []);
-  return evt
-    ? async () => {
+  if (installed === null) return { kind: "unavailable" };
+  if (installed) return { kind: "installed" };
+  if (evt)
+    return {
+      kind: "prompt",
+      install: async () => {
         await evt.prompt();
         setEvt(null);
-      }
-    : null;
+      },
+    };
+  if (ios) return { kind: "ios" };
+  return { kind: "unavailable" };
+}
+
+/** Back-compat: returns a trigger only when the browser offers a native prompt. */
+export function useInstallPrompt() {
+  const state = useInstallState();
+  return state.kind === "prompt" ? state.install : null;
 }
