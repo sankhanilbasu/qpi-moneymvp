@@ -15,7 +15,6 @@ const tabs = [
 
 export function AppShell({ title, children, spatial = false, back, actions }: { title: string; children: ReactNode; spatial?: boolean; back?: (() => void) | undefined; actions?: ReactNode }) {
   const { dark, toggle } = useTheme();
-  const install = useInstallPrompt();
   const navigate = useNavigate();
   useEffect(() => {
     if (!isSignedIn()) navigate({ to: "/" });
